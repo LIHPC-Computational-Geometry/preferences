@@ -1,0 +1,642 @@
+Version 5.6.2 : 25/11/22
+===============
+
+Un peu de nettoyage (hors sources).
+
+
+Version 5.6.1 : 06/05/22
+===============
+
+Correctif QtPrefsUpdater::update : enregistrement au format UTF-8 en toutes circonstances. 
+Un fichier de préférences pouvait être enregistré au format ISO-8859 en cas de mise à jour par l'updater.
+
+
+Version 5.6.0 : 19/04/22
+===============
+
+Retouche classe StrX pour encodage forme local native -> UTF-8.
+Corrige des dysfonctionnements (pertes des caractères non ASCII) en certaines conditions.
+
+
+Version 5.5.9 : 09/02/22
+===============
+
+CMakeLists.txt : remplacement de NO_DEFAULT_PATH par NO_CMAKE_SYSTEM_PATH pour Qt.
+
+
+Version 5.5.8 : 04/11/21
+===============
+
+Utilisation de NO_DEFAULT_PATH lors des find_package(Qt 5 ...)
+
+
+Version 5.5.7 : 10/09/21
+===============
+
+Suppression de mini gros-mots et de balises EXPURGE.
+
+
+Version 5.5.6 : 30/08/21
+===============
+
+Enregistrement des fichiers en UTF-8 en toutes circonstances.
+
+
+Version 5.5.5 : 24/08/21
+===============
+
+Suppression des noms de services et laboratoires.
+
+
+Version 5.5.4 : 28/07/21 
+===============
+
+Correctif dans XMLLoader : les chaînes de caractères XMLString (UTF-16) sont converties
+en chaînes de caractères string via les fonctions Xerces (XMLString::transcode, via 
+StrX dans XercesUtils.h) à la place de la classe UTF8String de TkUtil.
+Corrige un bogue rencontré lorsque la libiconv utilisée est la version 1.16 et qui semble
+manifestement attendre un BOM en tête de chaîne UTF-16 (reconstitué en ajoutant le BOM 
+little endian 0xFF 0xFE0.
+
+
+Version 5.5.3 : 27/04/21 (NL)
+===============
+
+Correctifs find_dependency dans les fichiers cmake.
+
+
+Version 5.5.2 : 14/12/20 Révisions svn 403/404
+===============
+
+Retouche mineure CMakeLists.txt
+
+
+Version 5.5.1 : 14/12/20 Révisions svn 401/402
+===============
+
+Retouche mineure CMakeLists.txt racine
+
+
+Version 5.5.0 : 04/11/20 Révisions svn 399/400
+===============
+
+Retouches mineures des CMakeLists.txt relatives à l'utilisation de Qt.
+
+Suppression classes XMLLoader_0_1_0 et PrettyDOMWriter
+Suppression code Xerces-C v 2.*
+Portage Xerces-C v 4.0.
+
+
+Version 5.4.5 : 06/10/20 Révisions svn 396/397
+===============
+
+Retouches mineures pour export.
+
+
+Version 5.4.4 : 22/07/20 Révisions svn 395/396
+===============
+
+v 0.8.0 de cmake/workarounds.cmake (LC_ALL=C)
+
+
+Version 5.4.3 : 15/07/20 Révisions svn 393/394
+===============
+
+- Ajout -DNDEBUG à la compilation en mode non debug.
+- Retouches fichiers cmake relatives aux droits des fichiers installés (fonction INSTALL).
+
+
+Version 5.4.2 : 25/06/20 Révisions svn 387/388
+===============
+
+Petits correctifs pour import/export.
+
+
+Version 5.4.1 : 08/06/20 Révisions svn 384/385
+===============
+
+Petits correctifs pour import/export.
+cmake/common.cmake : ajout à CMAKE_CXX_FLAGS de la variable EXTRA_CXX_FLAGS éventuellement transmise en argument
+de cmake.
+
+
+Version 5.4.0 : 04/06/20 Révisions svn 382/383
+===============
+
+Fin réintégration en environnement CEA suite confinement covid-19.
+Procédure d'exportation ouverte des sources : cible export avec script export.sh (réalisation d'un tarball filtré,
+sans gros mots, reposant sur la commande expurge réalisée à cet effet et sur la commande tar).
+cmake/workaround.cmake utilise maintenant la commande lsb_release -d à la place du tandem uname/commande locale. A
+finaliser sur calculateur.
+
+
+Version 5.3.0 : 04/04/20
+===============
+
+Déplacement des en-têtes dans les répertoires PrefsCore, PrefsQt, PrefsXerces
+TkUtil v 5.4.0
+QtUtil v 5.3.0
+
+Divers petites évolutions :
+- QString::null -> QString ( )
+- *strstring -> *stringstream
+
+
+Version 5.2.0 : 19/03/20
+===============
+
+Passage du projet en UTF-8
+Portage g++ v 7.5.0
+auto_ptr -> unique_ptr
+
+
+Version 5.1.1 : 10/03/20. Révisions svn 374
+===============
+
+Suppression caractères accentués de XercesSessionManager::~XercesSessionManager
+(fichier ISO8859-1 ) pour faire plaisir à Spack. Cela suffira t'il ?
+
+
+Version 5.1.0 : 18/02/20. Révisions svn 372
+===============
+
+- Retouches compatibilité TkUtil/QtUtil : 5 et non 5.0.0
+
+
+Version 5.0.2 : 21/01/20. Révisions svn 370
+===============
+
+Script de génération de l'archive des sources, script create_tarball.sh.
+Fichier LISEZMOI.txt
+
+
+Version 5.0.1 : 06/01/20 révision svn 369
+===============
+
+Portage (Atos_7__x86_64). Retouche workarounds.cmake pour lib stdc++ GNU.
+
+
+Version 5.0.0 : 18/12/19 révisions svn r367/r368
+===============
+
+Portage CMake/Spack g++ 8.3/intel 18.0.3 (arrêt GSCC).
+
+
+Version 4.9.0 : 26/09/19 C. Pignerol (révisions svn r362/r363)
+===============
+
+TK_libraries v 4.10.0, QtUtil v 4.8.0.
+
+
+Version 4.8.0 : 05/09/19 C. Pignerol (révisions svn r359/r360)
+===============
+
+TK_libraries v 4.9.0, TkUtil v 4.6.0, QtUtil v 4.7.0.
+
+
+Version 4.7.0 : 18/12/18 C. Pignerol (révisions svn r356/r358)
+===============
+
+Arrêt boites de dialogue natives (QFileDialog).
+
+QtPrefsUpdater::update : passage API en UTF-8.
+
+
+Version 4.6.0 : 28/11/18 C. Pignerol (révisions svn r337/r339)
+===============
+
+TK_Variants v 4.6.0 (TkUtil v 4.5.0)
+
+
+Version 4.5.0 : 16/11/18 C. Pignerol (révisions svn r334/r336)
+===============
+
+TK_Variants v 4.5.0 (TkUtil v 4.4.0)
+
+
+Version 4.4.0 : 14/09/18 C. Pignerol (révisions svn r331/r333)
+===============
+
+TK_Variants v 4.4.0 (TkUtil v 4.3.0)
+
+Utilisation de ConsoleOutput::cout ( ) et cerr ( ) de TkUtil.
+
+
+Version 4.3.0 : 04/09/18 C. Pignerol (révisions svn r328/r330)
+===============
+
+TK_Variants v 4.3.0 (TkUtil v 4.2.0, QtUtil v 4.3.0)
+
+
+Version 4.2.0 : 22/06/18 C. Pignerol (révisions svn r325/r327)
+===============
+
+TK_Variants v 4.2.0 (TkUtil v 4.1.0, nouveaux services UTF8String).
+
+
+Version 4.1.0 : 08/06/18 C. Pignerol (révisions svn r322/r324)
+===============
+
+TK_Variants v 4.1.0 (Qt591, ECM_Variants v 1.22.0 => arret cible
+BullEL_6_AE__x86_64).
+Utilisation du scenario de deploiement QT_LIBS. Déploiement uniquement des
+versions statiques.
+
+- Module PrefsQt :
+Quelques passages string -> UTF8String (constructeur QtPreferencesDialog).
+
+
+Version 4.0.0 : 28/03/18 C. Pignerol
+===============
+
+- TK_variants v 4.0.0 : auto-détection du jeu de caractères utilisé
+pour encoder les fichiers sources.
+Utilisation de la classe UTF8String du module TkUtil en remplacement de
+UnicodeString.
+
+- Module PrefsQt : utilisation des nouveaux services de QtUtil v 4.0.0
+dans la gestion des libellés avec caractères accentués.
+
+
+Version 3.6.0 : 10/11/17 C. Pignerol
+===============
+
+- TK_variants v 3.0.0 (ECM_Variants v 1.21.0 : portage RH 7,
+compilateurs gcc 6.2.0, icpc 17.0.4)
+
+Utilisation de chaînes de caractères QLatin1String (passage Qt 5.8).
+
+Retouche de la règle de conversion .h -> moc_* requise à partir de Qt 5.?. En
+effet moc, lorsque la sortie est un fichier (et non stdout), fait les includes
+vers le .h compilé en relatif et non pas en asbsolu, et, du coup, ça ne marche
+pas forcément ...
+
+Suppression des QtCore/, QtGui/ et autre au niveau des include car incompatible
+avec les stations RH7 qui ont ses répertoires dans /usr/include => les fichiers
+inclus viennent de là en priorité et ce peut être incompatible avec ceux issus
+de notre distribution ...
+
+
+Version 3.5.0 : 19/10/17 C. Pignerol
+===============
+
+- TK_variants v 2.20.0 (QtUtil v 3.5.0)
+
+
+Version 3.4.0 : 21/07/17 C. Pignerol
+===============
+
+- TK_variants v 2.15.0 (TkUtil v 3.2.0)
+
+
+Version 3.3.0 : 23/06/17 C. Pignerol
+===============
+
+- TK_variants v 2.14.0 (QtUtil v 3.3.0)
+
+Pré-portage Qt 5.8.
+
+Compile, mais non testable car pas de lib Xerces déployée en gcc 4.8.1.
+De plus pas d'option propagée -std=c++11 pour les compilations gcc 4.8.1
+non Qt (donc TkUtil, ..., PrefsCore, ...).
+
+
+Version 3.2.0 : 15/03/17 C. Pignerol
+===============
+
+- TK_variants v 2.7.0 (TkUtil v 3.1.0, QtUtil v 3.2.0)
+
+
+Version 3.1.0 : 18/01/17 C. Pignerol
+===============
+
+- TK_variants v 2.3.0 (QtUtil v 3.1.0)
+
+
+Version 3.0.0 : 09/12/16 C. Pignerol
+===============
+
+- TK_variants v 2.0.0
+
+- TkUtil/QtUtil v 3.0.0
+
+Arrêt variant MT.
+
+
+Version 2.46.0 : 15/03/16 C. Pignerol
+================
+
+- TK_variants v 1.66.0
+
+
+Version 2.45.0 : 04/01/16 C. Pignerol
+================
+
+- TK_variants v 1.57.0
+
+
+Version 2.44.0 : 03/11/15 C. Pignerol
+================
+
+- TK_variants v 1.55.0
+
+
+Version 2.43.0 : 12/10/15
+================
+
+- TK_Variants v 1.53.0
+
+
+Version 2.42.0 : 07/07/15
+================
+
+- TK_Variants v 1.52.0 (cible Atos_7__x86_64).
+
+- Script de lancement de CfgEdit.
+
+
+Version 2.41.0 : 06/03/15
+================
+
+- Passage sous coverity => quelques correctifs.
+
+- TK_Variants v 1.48.0 (TkUtil v 2.36.0, QtUtil v 2.47.0).
+
+
+Version 2.40.0 : 01/12/14
+================
+
+- TK_Variants v 1.44.0 (QtUtil v 2.46.0).
+
+
+Version 2.39.0 : 28/11/14
+================
+
+- TK_Variants v 1.43.0 (TkUtil v 2.35.0).
+
+
+Version 2.38.1 : 15/05/14
+================
+
+- Module PrefsQt : classe QtPrefsUpdater qui permet d'actualiser des
+préférences utilisateurs suite, par exemple, à des modifications système.
+
+- Module CfgUpdate
+
+
+Version 2.38.0 : 04/04/14
+================
+
+- TK_Variants 1.38.0 (QtUtil v 2.44.0)
+
+
+Version 2.37.0 : 10/02/14
+================
+
+- TK_Variants 1.34.0 (QtUtil v 2.43.0)
+- Arrêt du support Qt v 3.
+- QtPreferencesPanel : dimensionnement automatique lors de la création afin
+  d'avoir les 2 premières colonnes de taille raisonnable.
+
+
+Version 2.36.0 : 17/12/13
+================
+
+- TK_Variants v 1.33.0.
+- TkUtil v 2.34.0
+
+
+Version 2.35.0 : 15/10/13
+================
+
+- TK_Variants v 1.31.0.
+- TkUtil v 2.33.0
+
+
+Version 2.34.0 : 30/05/13 puis redéployée le 14/06/13.
+================
+
+- TK_Variants v 1.27.0.
+- PrefsXerces : ~XStr fait delete fUnicodeForm à la place de
+delete [] fUnicodeForm (demande de valgrind).
+
+Déploiement du 14/06/13 :
+- XMLLoader : correctifs de bogue :
+	- XMLLoader::updateSimpleValue : l'opérateur istrstream >> long était appelé
+	pour les unsigned long.
+	- XMLLoader::getStrValue : chaine vide retournée si <value></value> à la
+	place d'une levée d'exception. Une erreur était signalée lorsqu'un élément
+	de type StringNamedValue était vide.
+
+
+Version 2.33.0 : 13/05/13
+================
+
+- TK_Variants v 1.26.0.
+- TkUtil v 2.31.0 : évolutions classe Mutex (mutex non récursifs, tryLock).
+
+
+Version 2.32.0 : 18/01/13
+================
+
+- TK_Variants v 1.24.0.
+- Passage à Xerces 3 (absence de version intermédiaire compatible
+Xerces 2/Xerces 3). Mais les sources demeurent compatibles avec Xerces 2
+Utiliser -DXERCES_2 à la place de -DXERCES_3).
+Il conviendrait alors de créer un variant définissant la version de Xerces
+utilisée.
+
+
+Version 2.31.0 : 20/12/12
+================
+
+- TK_Variants v 1.23.0 (Correctifs RH6, Qt474 par défaut, QtUtil 2.36.0).
+
+
+Version 2.30.0 : 12/10/12
+================
+
+- TK_Variants v 1.22.0 (TkUtil v 2.29.0, arrêt Qt 3, ajout Qt 4.7.4).
+
+
+Version 2.29.1 : 16/01/12
+================
+
+- Hors TK_Variants.
+
+Module PrefsQt :
+- QtPreferencesPanel::setRootSection recalcule la taille des colonnes
+(ergonomie).
+- QtPreferencesDialog::QtPreferencesDialog : boite de dialogue un peu plus
+grande par défaut.
+
+
+Version 2.29.0 : 24/11/11
+================
+
+- TK_Variants v 1.20.0 (TkUtil v 2.26.0).
+
+
+Version 2.28.0 : 08/09/11
+================
+
+- TK_Variants v 1.19.0 (TkUtil v 2.25.0).
+- Le constructeur de BoolNamedValue prend en argument
+l'éventuel commentaire associé à la valeur nommée.
+
+
+Version 2.27.0 : 16/03/11
+================
+
+- TK_Variants v 1.17.0 (TkUtil v 2.23.0).
+
+
+Version 2.26.0 : 25/01/11
+================
+
+- TK_Variants v 1.16.0 (TkUtil v 2.22.0).
+
+
+Version 2.25.0 : 13/01/11
+================
+
+- QtUtil v 2.30.0
+- TkVariants v 1.15.0
+
+
+Version 2.24.0 : 30/11/10
+================
+
+- QtUtil v 2.29.0
+- TkVariants v 1.12.0
+
+
+Version 2.23.0 : 15/11/10
+================
+
+- En-têtes : #include "*.h" -> #include <*.h>
+- TkUtil 2.21.0
+- QtUtil v 2.28.0
+- TkVariants v 1.11.0.
+
+
+Version 2.22.0 : 31/08/10
+================
+
+- TK_Variants v 1.19.0
+- TkUtil 2.20.0
+- Arrêt déploiement Qt 4.4.1.
+
+
+Version 2.21.0 : 21/06/10
+================
+
+TK_Variants v 1.18.0
+Qt 4.6.2
+
+
+Version 2.20.1 : 04/06/10
+================
+
+TK_Variants v 1.17.1
+TkUtil v 2.19.1
+
+
+Version 2.20.0 : 25/05/10
+================
+
+- TK_Variants 1.7.0
+- QtUtil 2.25.0
+
+
+Version 2.19.0 : 13/04/10
+================
+
+- TK_Variants 1.5.0 (xerces -> Xerces).
+- QtUtil 2.24.0
+
+
+Version 2.18.0 : 22/01/10
+================
+
+- TK_Variants 1.3.0 (xerces -> Xerces).
+
+
+Version 2.17.0 : 11/12/09
+================
+
+- TK_Variants 1.2.0
+- Actualisation de la documentation.
+
+
+Version 2.16.0 : 29/10/09
+================
+
+Le 26/11/09 : ajout variant MT (multithread) et redeploiement.
+L'usage de ce variant est inutile mais GSCC, dans sa version courante, n'est pas
+en mesure de faire des arbitrages lors qu'une bibliotheque est demandee avec une
+combinaison de variants donnee d'une part et avec des valeurs par defaut d'autre
+part. Le mauvais choix peut etre fait, avec d'eventuelles incompatibilites
+(ex : -DMULTITHREADED_APPLICATION utilise pour certaines composantes, et non
+utilisees pour d'autres).
+L'ajout de ce variant permet d'utiliser facilement dans les versions a venir
+une declinaison multithread.
+
+- Portage Fedora_11__x86_64, arret RH 5 32 bits et +-Nehalem.
+- Arret Qt 4.3.2, portage Qt 4.4.1.
+- Passage de Xerces 2.5.0 a Xerces 2.7.0.
+- Portage gcc 4.4.0/icpc 11.1.056.
+- Utilisation de ECM_variants.xml/TK_Variants.xml (variants systeme
+d'exploitation/compilateurs utilises).
+
+
+Version 2.15.0 : 15/10/09
+================
+
+Portage sous GSCC.
+Renommage des bibliotheques :
+	- iceprefs -> PrefsCore
+	- iceprefsqt -> PrefsQt
+	- iceprefsxerces -> PrefsXerces
+
+
+Version 2.14.0 : 09/04/09
+================
+
+Suit TkUtil v 2.14.0.
+
+
+Version 2.13.0 : 03/04/09
+================
+
+Suit QtUtil v 2.17.0.
+
+
+Version 2.12.0 : 23/03/09
+================
+
+Suit TkUtil v 2.13.0.
+
+
+Version 2.11.0 : 16/01/09
+================
+
+Suit TkUtil v 2.12.0.
+
+
+Version 2.8.1 : 07/04/08
+===============
+
+Module qt :
+	Suite portage Qt 4.
+
+
+Versions antérieures :
+======================
+
+Voir fichier versions.old.
+
+Versions antérieures :
+======================
+
+Archivées dans les sources de Lem version 2.6.0.
