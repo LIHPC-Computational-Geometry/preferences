@@ -58,7 +58,8 @@ jobs:
           spack env activate meshing-env
           spack load preferences
           # to instantiate a Qt class in github CI
-          apt install libopencv-dev python3-opencv
+          apt update
+          apt install -y libopencv-dev python3-opencv
           cd test_link/
           cmake -S . -B build_exe
           cmake --build build_exe
