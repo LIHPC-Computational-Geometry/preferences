@@ -59,7 +59,8 @@ jobs:
           spack env activate meshing-env
           spack load preferences
           # to instantiate a Qt class in github CI
-          apt-get install freeglut3-dev
+          apt update
+          apt install -y freeglut3-dev
           cd test_link/
           cmake -S . -B build_exe
           cmake --build build_exe
