@@ -57,7 +57,8 @@ jobs:
           source /spack/share/spack/setup-env.sh
           spack env activate meshing-env
           spack load preferences
-          pip install opencv-python-headless # to instantiate a Qt class in github CI
+          # to instantiate a Qt class in github CI
+          apt install libopencv-dev python3-opencv
           cd test_link/
           cmake -S . -B build_exe
           cmake --build build_exe
