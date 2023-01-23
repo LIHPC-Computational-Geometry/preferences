@@ -42,6 +42,7 @@ jobs:
           spack add preferences
           # we use GITHUB_WORKSPACE instead of github.Workspace because in containers it
           # seems to be incorrect (see https://github.com/actions/runner/issues/2058)
+          export XDG_DATA_DIRS=$XDG_DATA_DIRS:/usr/share
           spack develop -p $GITHUB_WORKSPACE --no-clone preferences@5.6.2
           spack install --no-checksum
           # now we build using cmake with spack provided build variables
