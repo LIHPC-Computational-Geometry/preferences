@@ -30,7 +30,8 @@ class NamedValue : public Element
 
 	/**
 	 * @param		Nouvelle valeur, sous forme de chaine de caractères.
-	 * @exception	Lève une exception si la valeur est incorrecte.
+	 * @exception	Lève une exception si la valeur est incorrecte ou non surchargeable.
+	 * @see			isOverloadable
 	 */
 	virtual void setStrValue (const IN_STD string& value) = 0;
 
@@ -48,10 +49,11 @@ class NamedValue : public Element
 	 * Constructeur.
 	 * @param		Nom de l'élément.
 	 * @param		Eventuel commentaire associé à la valeur nommée.
+	 * @param		Caractère surchargeable de l'élément.
+	 * @param		Caractère enregistrable de l'élément.
 	 */
-	NamedValue (const IN_UTIL UTF8String& name, 
-			const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ))
-		: Element (name, comment)
+	NamedValue (const IN_UTIL UTF8String& name, const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ), bool overloadable = true, bool safeguardable = true)
+		: Element (name, comment, overloadable, safeguardable)
 	{ }
 
 	/**

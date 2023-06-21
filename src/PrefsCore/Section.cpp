@@ -17,8 +17,8 @@ static const Charset	charset ("àéèùô");
 const string Section::typeName ("section");
 
 
-Section::Section (const UTF8String& name, const UTF8String& comment)
-	: Element (name, comment), _sections ( ), _namedValues ( )
+Section::Section (const UTF8String& name, const UTF8String& comment, bool overloadable, bool safeguardable)
+	: Element (name, comment, overloadable, safeguardable), _sections ( ), _namedValues ( )
 {
 }	// Section::Section
 
@@ -93,6 +93,38 @@ Element* Section::clone ( ) const
 }	// Section::clone
 
 
+bool Section::checkForModification (bool raise)			// v 5.7.0
+{
+	if (true == isOverloadable ( ))
+		return true;
+		
+	if (true == raise)
+	{
+		UTF8String	message (charset);
+		message << "Section::checkForModification. La section " << getName ( ) << " n'est pas modifiable.";
+		throw Exception (message);
+	}	// if (true == raise)
+	
+	return false;
+}	// Section::checkForModification
+
+
+bool Section::checkForSafeguard (bool raise)			// v 5.7.0
+{
+	if (true == isSafeguardable ( ))
+		return true;
+		
+	if (true == raise)
+	{
+		UTF8String	message (charset);
+		message << "Section::checkForSafeguard. La section " << getName ( ) << " n'est pas enregistrable.";
+		throw Exception (message);
+	}	// if (true == raise)
+	
+	return false;
+}	// Section::checkForSafeguard
+
+
 bool Section::hasElement (const UTF8String& name) const
 {
 	if (true == hasSection (name))
@@ -124,18 +156,18 @@ bool Section::hasSection (const UTF8String& name) const
 
 void Section::addSection (Section* section)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	if (0 == section)
 	{
 		UTF8String	error (charset);
-		error << "Tentative d'ajout d'une section nulle à la section "
-		      << getName ( );
+		error << "Tentative d'ajout d'une section nulle à la section " << getName ( );
 		throw Exception (error);
 	}	// if (0 == section)
 	if (true == hasSection (section->getName ( )))
 	{
 		UTF8String	error (charset);
-		error << "Echec de l'ajout de la section " << section->getName ( )
-		      << " à la section " << getName ( )
+		error << "Echec de l'ajout de la section " << section->getName ( ) << " à la section " << getName ( )
 		      << ". Cette section a déjà une sous-section de ce nom.";
 		throw Exception (error);
 	}	// if (true == hasSection (section->getName ( )))
@@ -147,17 +179,17 @@ void Section::addSection (Section* section)
 
 void Section::removeSection (const UTF8String& name)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	if (false == hasSection (name))
 	{
 		UTF8String	error (charset);
-		error << "Echec de la suppression de la section " << name
-		      << " à la section " << getName ( )
+		error << "Echec de la suppression de la section " << name << " à la section " << getName ( )
 		      << ". Cette section n'a pas de sous-section de ce nom.";
 		throw Exception (error);
 	}	// if (false == hasSection (name))
 
-	for (vector<Section*>::iterator its = _sections.begin ( );
-	     _sections.end ( ) != its; its++)
+	for (vector<Section*>::iterator its = _sections.begin ( ); _sections.end ( ) != its; its++)
 		if (name == (*its)->getName ( ))
 		{
 			delete *its;
@@ -166,8 +198,7 @@ void Section::removeSection (const UTF8String& name)
 		}
 
 	UTF8String	internalError (charset);
-	internalError << "Echec de la suppression de la section " << name
-		          << " à la section " << getName ( )
+	internalError << "Echec de la suppression de la section " << name << " à la section " << getName ( )
 		          << ". Cette section n'a pas de sous-section de ce nom.";
 	INTERNAL_ERROR (exc, internalError, "Section::removeSection")
 	throw exc;
@@ -176,14 +207,12 @@ void Section::removeSection (const UTF8String& name)
 
 Section& Section::getSection (const UTF8String& name) const
 {
-	for (vector<Section*>::const_iterator its = _sections.begin ( );
-	     _sections.end ( ) != its; its++)
+	for (vector<Section*>::const_iterator its = _sections.begin ( ); _sections.end ( ) != its; its++)
 		if (name == (*its)->getName ( ))
 			return **its;
 
 	UTF8String	error (charset);
-	error << "Echec de la récupération de la section " << name
-		  << " depuis la section " << getName ( )
+	error << "Echec de la récupération de la section " << name << " depuis la section " << getName ( )
 		  << ". Cette section n'a pas de sous-section de ce nom.";
 	throw Exception (error);
 }	// Section::getSection
@@ -197,8 +226,7 @@ vector<Section*> Section::getSections ( ) const
 
 bool Section::hasNamedValue (const UTF8String& name) const
 {
-	for (vector<NamedValue*>::const_iterator	itnv	= _namedValues.begin ( );
-	     _namedValues.end ( ) != itnv; itnv++)
+	for (vector<NamedValue*>::const_iterator	itnv	= _namedValues.begin ( ); _namedValues.end ( ) != itnv; itnv++)
 		if (name == (*itnv)->getName ( ))
 			return true;
 
@@ -208,18 +236,18 @@ bool Section::hasNamedValue (const UTF8String& name) const
 
 void Section::addNamedValue (NamedValue* namedValue)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	if (0 == namedValue)
 	{
 		UTF8String	error (charset);
-		error << "Tentative d'ajout d'une valeur nommée nulle à la section "
-		      << getName ( );
+		error << "Tentative d'ajout d'une valeur nommée nulle à la section " << getName ( );
 		throw Exception (error);
 	}	// if (0 == namedValue)
 	if (true == hasNamedValue (namedValue->getName ( )))
 	{
 		UTF8String	error (charset);
-		error << "Echec de l'ajout de la valeur nommée " 
-		      << namedValue->getName ( ) << " à la section " << getName ( )
+		error << "Echec de l'ajout de la valeur nommée " << namedValue->getName ( ) << " à la section " << getName ( )
 		      << ". Cette section a déjà une valeur nommée de ce nom.";
 		throw Exception (error);
 	}	// if (true == hasNamedValue (namedValue->getName ( )))
@@ -231,17 +259,17 @@ void Section::addNamedValue (NamedValue* namedValue)
 
 void Section::removeNamedValue (const UTF8String& name)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	if (false == hasNamedValue (name))
 	{
 		UTF8String	error (charset);
-		error << "Echec de la suppression de la valeur nommée " << name
-		      << " à la section " << getName ( )
+		error << "Echec de la suppression de la valeur nommée " << name << " à la section " << getName ( )
 		      << ". Cette section n'a pas de valeur nommée de ce nom.";
 		throw Exception (error);
 	}	// if (false == hasNamedValue (name))
 
-	for (vector<NamedValue*>::iterator itnv = _namedValues.begin ( );
-	     _namedValues.end ( ) != itnv; itnv++)
+	for (vector<NamedValue*>::iterator itnv = _namedValues.begin ( ); _namedValues.end ( ) != itnv; itnv++)
 		if (name == (*itnv)->getName ( ))
 		{
 			delete *itnv;
@@ -250,8 +278,7 @@ void Section::removeNamedValue (const UTF8String& name)
 		}
 
 	UTF8String	internalError (charset);
-	internalError << "Echec de la suppression de la valeur nommée " << name
-		          << " à la section " << getName ( )
+	internalError << "Echec de la suppression de la valeur nommée " << name << " à la section " << getName ( )
 		          << ". Cette section n'a pas de valeur nommée de ce nom.";
 	INTERNAL_ERROR (exc, internalError, "Section::removeNamedValue")
 	throw exc;
@@ -260,14 +287,12 @@ void Section::removeNamedValue (const UTF8String& name)
 
 NamedValue& Section::getNamedValue (const UTF8String& name) const
 {
-	for (vector<NamedValue*>::const_iterator itnv = _namedValues.begin ( );
-	     _namedValues.end ( ) != itnv; itnv++)
+	for (vector<NamedValue*>::const_iterator itnv = _namedValues.begin ( ); _namedValues.end ( ) != itnv; itnv++)
 		if (name == (*itnv)->getName ( ))
 			return **itnv;
 
 	UTF8String	error (charset);
-	error << "Echec de la récupération de la valeur nommée " << name
-		  << " depuis la section " << getName ( )
+	error << "Echec de la récupération de la valeur nommée " << name << " depuis la section " << getName ( )
 		  << ". Cette section n'a pas de valeur nommée de ce nom.";
 	throw Exception (error);
 }	// Section::getNamedValue
@@ -279,17 +304,16 @@ vector<NamedValue*> Section::getNamedValues ( ) const
 }	// Section::getNamedValues
 
 
-void Section::renameElement (const UTF8String& name,
-                             const UTF8String& newName)
+void Section::renameElement (const UTF8String& name, const UTF8String& newName)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	UTF8String	errorMsg (charset);
-	errorMsg << "Impossible de renommer l'élément " << name << " en "
-	         << newName << " :\n";
+	errorMsg << "Impossible de renommer l'élément " << name << " en " << newName << " :\n";
 
 	if (false == hasElement (name))
 	{
-		errorMsg << " la section " << getName ( ) 
-		         << " n'a pas d'élément de ce nom.";
+		errorMsg << " la section " << getName ( ) << " n'a pas d'élément de ce nom.";
 		throw Exception (errorMsg);
 	}	// if (false == hasElement (name))
 	if (name == newName)
@@ -297,9 +321,7 @@ void Section::renameElement (const UTF8String& name,
 
 	if (true == hasElement (newName))
 	{
-		errorMsg << " la section " << getName ( ) 
-		         << " a déjà un élément du nom de " << newName 
-		         << ".";
+		errorMsg << " la section " << getName ( ) << " a déjà un élément du nom de " << newName << ".";
 		throw Exception (errorMsg);
 	}	// if (true == hasElement (newName))
 
@@ -321,17 +343,17 @@ void Section::renameElement (const UTF8String& name,
 
 void Section::rename (const UTF8String& name)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	if (true == hasParent ( ))
 	{
 		UTF8String	errorMsg (charset);
-		errorMsg << "Impossible de renommer la section " << getName ( )
-		         << " par Section::rename : cette section a un parent.";
+		errorMsg << "Impossible de renommer la section " << getName ( ) << " par Section::rename : cette section a un parent.";
 		throw Exception (errorMsg);
 	}	// if (true == hasParent ( ))
 
 	setName (name);
 }	// Section::rename
-
 
 
 void Section::print (ostream& stream, size_t indent) const
@@ -341,14 +363,12 @@ void Section::print (ostream& stream, size_t indent) const
 	stream << getName ( ) << endl;
 	for (i = 0; i < indent; i++) stream << '\t';
 	stream << "{" << endl;
-	for (vector<Section*>::const_iterator its = _sections.begin ( );
-	     _sections.end ( ) != its; its++)
+	for (vector<Section*>::const_iterator its = _sections.begin ( ); _sections.end ( ) != its; its++)
 	{
 		(*its)->print (stream, indent + 1);
 		stream << endl;
 	}	// for (vector<Section*>::iterator its = _sections.begin ( );
-	for (vector<NamedValue*>::const_iterator itnv = _namedValues.begin ( );
-	     _namedValues.end ( ) != itnv; itnv++)
+	for (vector<NamedValue*>::const_iterator itnv = _namedValues.begin ( ); _namedValues.end ( ) != itnv; itnv++)
 	{
 		(*itnv)->print (stream, indent + 1);
 		stream << endl;
@@ -365,13 +385,11 @@ void Section::copy (const Section& section)
 	Element::copy (section);
 
 	vector<Section*>	subSections	= section.getSections ( );
-	for (vector<Section*>::const_iterator its	= subSections.begin ( );
-	     subSections.end ( ) != its; its++)
+	for (vector<Section*>::const_iterator its	= subSections.begin ( ); subSections.end ( ) != its; its++)
 		_sections.push_back (dynamic_cast<Section*>((*its)->clone ( )));
 
 	vector<NamedValue*>	values	= section.getNamedValues ( );
-	for (vector<NamedValue*>::const_iterator itv	= values.begin ( );
-	     values.end ( ) != itv; itv++)
+	for (vector<NamedValue*>::const_iterator itv	= values.begin ( ); values.end ( ) != itv; itv++)
 		_namedValues.push_back (dynamic_cast<NamedValue*>((*itv)->clone ( )));
 }	// Section::copy
 

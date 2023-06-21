@@ -41,6 +41,8 @@ string LongNamedValue::getStrValue ( ) const
 
 void LongNamedValue::setStrValue (const string& value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	long		val;
 	istringstream	stream (value.c_str ( ));
 
@@ -48,8 +50,7 @@ void LongNamedValue::setStrValue (const string& value)
 	if ((true == stream.fail ( )) || (true == stream.bad ( )) || (false == stream.eof ( )))
 	{
 		UTF8String	msg (charset);
-		msg << "Impossible de convertir la chaine de caractères "
-		    << value << " en entier long.";
+		msg << "Impossible de convertir la chaine de caractères " << value << " en entier long.";
 		throw Exception (msg);
 	}	// if ((true == stream.fail ( )) || ...
 
@@ -59,6 +60,8 @@ void LongNamedValue::setStrValue (const string& value)
 
 void LongNamedValue::setValue (long value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	_value	= value;
 }	// LongNamedValue::setValue
 

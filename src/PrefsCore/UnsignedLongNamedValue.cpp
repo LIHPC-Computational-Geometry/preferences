@@ -41,6 +41,8 @@ string UnsignedLongNamedValue::getStrValue ( ) const
 
 void UnsignedLongNamedValue::setStrValue (const string& value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	unsigned long	val;
 	istringstream	stream (value.c_str ( ));
 
@@ -48,8 +50,7 @@ void UnsignedLongNamedValue::setStrValue (const string& value)
 	if ((true == stream.fail ( )) || (true == stream.bad ( )) || (false == stream.eof ( )))
 	{
 		UTF8String	msg (charset);
-		msg << "Impossible de convertir la chaine de caractères "
-		    << value << " en entier long non signé.";
+		msg << "Impossible de convertir la chaine de caractères " << value << " en entier long non signé.";
 		throw Exception (msg);
 	}	// if ((true == stream.fail ( )) || ...
 
@@ -59,6 +60,8 @@ void UnsignedLongNamedValue::setStrValue (const string& value)
 
 void UnsignedLongNamedValue::setValue (unsigned long value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	_value	= value;
 }	// UnsignedLongNamedValue::setValue
 

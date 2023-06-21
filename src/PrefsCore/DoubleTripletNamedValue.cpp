@@ -42,19 +42,19 @@ string DoubleTripletNamedValue::getStrValue ( ) const
 
 void DoubleTripletNamedValue::setStrValue (const string& value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	double		x, y, z;
 	char		p1, p2, c1, c2;
 	istringstream	stream (value.c_str ( ));
 
 	stream >> p1 >> x >> c1 >> y >> c2 >> z >> p2;
-//	if ((true == stream.fail ( )) || (true == stream.bad ( )) ||
-//	    (false == stream.eof ( )))
+//	if ((true == stream.fail ( )) || (true == stream.bad ( )) || (false == stream.eof ( )))
 // On n'a pas eof dans certains cas. Pourquoi ? Il n'y a plus rien a lire.
 	if ((true == stream.fail ( )) || (true == stream.bad ( )))
 	{
 		UTF8String	msg (charset);
-		msg << "Impossible de convertir la chaine de caractères "
-		    << value << " en un triplet de doubles.";
+		msg << "Impossible de convertir la chaine de caractères " << value << " en un triplet de doubles.";
 		throw Exception (msg);
 	}	// if ((true == stream.fail ( )) || ...
 
@@ -64,6 +64,8 @@ void DoubleTripletNamedValue::setStrValue (const string& value)
 
 void DoubleTripletNamedValue::setValue (double x, double y, double z)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	_x	= x;
 	_y	= y;
 	_z	= z;

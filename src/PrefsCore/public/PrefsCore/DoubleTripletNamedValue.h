@@ -21,11 +21,12 @@ class DoubleTripletNamedValue : public NamedValue
 	 * @param		Nom de l'élément.
 	 * @param		Composantes de la valeur de l'élément.
 	 * @param		Eventuel commentaire associé à la valeur nommée.
+	 * @param		Caractère surchargeable de l'élément.
+	 * @param		Caractère enregistrable de l'élément.
 	 */
-	DoubleTripletNamedValue (const IN_UTIL UTF8String& name, 
-			double x = 0., double y = 0., double z = 0.,
-			const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ))
-		: NamedValue (name, comment), _x (x), _y (y), _z (z)
+	DoubleTripletNamedValue (const IN_UTIL UTF8String& name,  double x = 0., double y = 0., double z = 0.,
+			const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ), bool overloadable = true, bool safeguardable = true)
+		: NamedValue (name, comment, overloadable, safeguardable), _x (x), _y (y), _z (z)
 	{ }
 
 	/**
@@ -33,15 +34,13 @@ class DoubleTripletNamedValue : public NamedValue
 	 * @param		Elément copié.
 	 */
 	DoubleTripletNamedValue (const DoubleTripletNamedValue& namedValue)
-		: NamedValue (namedValue), 
-		  _x (namedValue._x), _y (namedValue._y), _z (namedValue._z)
+		: NamedValue (namedValue), _x (namedValue._x), _y (namedValue._y), _z (namedValue._z)
 	{ }
 
 	/**
 	 * Opérateur =.
 	 */
-	DoubleTripletNamedValue& operator = (
-						const DoubleTripletNamedValue& namedValue);
+	DoubleTripletNamedValue& operator = (const DoubleTripletNamedValue& namedValue);
 
 	/**
 	 * Destructeur : RAS.
@@ -56,15 +55,13 @@ class DoubleTripletNamedValue : public NamedValue
 	virtual Element* clone ( ) const;
 
 	/**
-	 * @return		La valeur associée sous forme de chaine de caractères
-	 *				"(x, y, z)".
+	 * @return		La valeur associée sous forme de chaine de caractères "(x, y, z)".
 	 */
 	virtual IN_STD string getStrValue ( ) const;
 
 	/**
-	 * @param		Nouvelle valeur, sous forme de chaine de caractères
-	 *				"(x, y, z)".
-	 * @exception	Lève une exception si la valeur est incorrecte.
+	 * @param		Nouvelle valeur, sous forme de chaine de caractères "(x, y, z)".
+	 * @exception	Lève une exception si la valeur est incorrecte ou non surchargeable.
 	 */
 	virtual void setStrValue (const IN_STD string& value);
 
@@ -86,6 +83,7 @@ class DoubleTripletNamedValue : public NamedValue
 
 	/**
 	 * @param		Nouvelle valeur associée
+	 * @exception	Lève une exception si la valeur est incorrecte ou non surchargeable.
 	 */
 	virtual void setValue (double x, double y, double z);
 

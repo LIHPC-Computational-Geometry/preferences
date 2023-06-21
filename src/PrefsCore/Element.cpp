@@ -32,8 +32,7 @@ Element::OriginInfos::OriginInfos (const Element::OriginInfos& toCopy)
 }	// OriginInfos::OriginInfos
 
 
-Element::OriginInfos& Element::OriginInfos::operator = (
-										const Element::OriginInfos& toCopy)
+Element::OriginInfos& Element::OriginInfos::operator = (const Element::OriginInfos& toCopy)
 {
 	if (&toCopy != this)
 		copy (toCopy);
@@ -65,16 +64,15 @@ void Element::OriginInfos::copy (const OriginInfos& toCopy)
 // ===========================================================================
 
 
-Element::Element (const UTF8String& name, const UTF8String& comment)
-	: _name ( ), _appType ( ), _parent (0), _comment (comment), _infos ( )
+Element::Element (const UTF8String& name, const UTF8String& comment, bool overloadable, bool safeguardable)
+	: _name ( ), _overloadable (overloadable), _safeguardable (safeguardable), _appType ( ), _parent (0), _comment (comment), _infos ( )
 {
 	setName (name);
 }	// Element::Element
 
 
 Element::Element (const Element& element)
-	: _name ( ), _appType ( ), _parent (0), _comment (element.getComment ( )),
-	  _infos ( )
+	: _name ( ), _overloadable (element._overloadable), _safeguardable (element._safeguardable), _appType ( ), _parent (0), _comment (element.getComment ( )),_infos ( )
 {
 	setName (element.getName ( ));
 }	// Element::Element (const Element&)
@@ -86,6 +84,68 @@ Element& Element::operator = (const Element& element)
 
 	return *this;
 }	// Element::operator =
+
+
+bool Element::isOverloadable ( ) const					// v 5.7.0
+{
+	if ((true == hasParent ( )) && (false == getParent ( ).isOverloadable ( )))
+		return false;
+			
+	return _overloadable;
+}	// Element::isOverloadable
+
+
+void Element::setOverloadable (bool overloadable)		// v 5.7.0
+{
+	_overloadable	= overloadable;
+}	// Element::setOverloadable
+
+
+bool Element::checkForModification (bool raise)			// v 5.7.0
+{
+	if (true == isOverloadable ( ))
+		return true;
+		
+	if (true == raise)
+	{
+		UTF8String	message (charset);
+		message << "Element::checkForModification. L'élément " << getName ( ) << " n'est pas modifiable.";
+		throw Exception (message);
+	}	// if (true == raise)
+	
+	return false;
+}	// Element::checkForModification
+
+
+bool Element::isSafeguardable ( ) const					// v 5.7.0
+{
+	if ((true == hasParent ( )) && (false == getParent ( ).isSafeguardable ( )))
+		return false;
+		
+	return _safeguardable;
+}	// Element::isSafeguardable
+
+
+void Element::setSafeguardable (bool safeguardable)		// v 5.7.0
+{
+	_safeguardable	= safeguardable;
+}	// Element::setSafeguardable
+
+
+bool Element::checkForSafeguard (bool raise)			// v 5.7.0
+{
+	if (true == isSafeguardable ( ))
+		return true;
+		
+	if (true == raise)
+	{
+		UTF8String	message (charset);
+		message << "Element::checkForSafeguard. L'élément " << getName ( ) << " n'est pas enregistrable.";
+		throw Exception (message);
+	}	// if (true == raise)
+	
+	return false;
+}	// Element::checkForSafeguard
 
 
 const UTF8String& Element::getAppType ( ) const
@@ -105,8 +165,7 @@ Section& Element::getParent ( ) const
 	if (0 == _parent)
 	{
 		UTF8String	message (charset);
-		message << "Element::getParent. L'élément " << getName ( )
-		        << " n'a pas de parent.";
+		message << "Element::getParent. L'élément " << getName ( ) << " n'a pas de parent.";
 		throw Exception (message);
 	}	// if (0 == _parent)
 
@@ -164,21 +223,16 @@ bool Element::isIso ( ) const
 
 void Element::setName (const UTF8String& name)
 {
-	// On joue avec le charset car en cas de variables statiques globales
-	// dérivées d'Element setName peut être appelé avant que la variable
+	// On joue avec le charset car en cas de variables statiques globales dérivées d'Element setName peut être appelé avant que la variable
 	// statique charset de ce fichier ne soit initialisée ...
-	// Du coup la préparation du message d'erreur lève une exception car
-	// charset.charset ( ) vaut UNKNOWN ...
-	Charset	cs (Charset::UNKNOWN == charset.charset ( ) ?
-			    Charset::ASCII : charset.charset ( ));
+	// Du coup la préparation du message d'erreur lève une exception car charset.charset ( ) vaut UNKNOWN ...
+	Charset	cs (Charset::UNKNOWN == charset.charset ( ) ? Charset::ASCII : charset.charset ( ));
 //	UTF8String	errorMsg (charset);
 	UTF8String	errorMsg (cs);
 	if (Charset::UNKNOWN != charset.charset ( ))
-		errorMsg << "Impossibilité de renommer l'élément "
-		         << getName ( ) << " en " << name << " : ";
+		errorMsg << "Impossibilité de renommer l'élément " << getName ( ) << " en " << name << " : ";
 	else
-		errorMsg << "Impossibilite de renommer l'element "
-		         << getName ( ) << " en " << name << " : ";
+		errorMsg << "Impossibilite de renommer l'element " << getName ( ) << " en " << name << " : ";
 
 	if (0 == name.length ( ))
 	{

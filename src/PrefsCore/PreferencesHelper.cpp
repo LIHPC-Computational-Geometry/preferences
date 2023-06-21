@@ -41,8 +41,7 @@ PreferencesHelper::~PreferencesHelper ( )
 }	// PreferencesHelper::~PreferencesHelper
 
 
-Section& PreferencesHelper::getSection (
-								Section& parent, const UTF8String& name)
+Section& PreferencesHelper::getSection (Section& parent, const UTF8String& name, const UTF8String& comment, bool overloadable, bool safeguardable)
 {
 	try
 	{
@@ -50,15 +49,14 @@ Section& PreferencesHelper::getSection (
 	}
 	catch (...)
 	{
-		Section*	section	= new Section (name);
+		Section*	section	= new Section (name, comment, overloadable, safeguardable);
 		parent.addSection (section);
 		return parent.getSection (name);
 	}
 }	// PreferencesHelper::getSection
 
 
-BoolNamedValue& PreferencesHelper::getBooleanNamedValue (
-								Section& parent, const UTF8String& name)
+BoolNamedValue& PreferencesHelper::getBooleanNamedValue (Section& parent, const UTF8String& name, bool value, const UTF8String& comment, bool overloadable, bool safeguardable)
 {
 	try
 	{
@@ -67,8 +65,7 @@ BoolNamedValue& PreferencesHelper::getBooleanNamedValue (
 		if (0 == boolean)
 		{
 			UTF8String	errorMsg (charset);
-			errorMsg << name.ascii ( )
-			         << " n'est pas une valeur nommée de type bouléen.";
+			errorMsg << name.ascii ( ) << " n'est pas une valeur nommée de type bouléen.";
 			throw Exception (errorMsg);
 		}
 
@@ -76,15 +73,14 @@ BoolNamedValue& PreferencesHelper::getBooleanNamedValue (
 	}
 	catch (...)
 	{
-		BoolNamedValue*	boolean	= new BoolNamedValue (name);
+		BoolNamedValue*	boolean	= new BoolNamedValue (name, value, comment, overloadable, safeguardable);
 		parent.addNamedValue (boolean);
 		return *boolean;
 	}
 }	// PreferencesHelper::getBooleanNamedValue
 
 
-StringNamedValue& PreferencesHelper::getStringNamedValue (
-									Section& parent, const UTF8String& name)
+StringNamedValue& PreferencesHelper::getStringNamedValue (Section& parent, const UTF8String& name, const UTF8String& value, const UTF8String& comment, bool overloadable, bool safeguardable)
 {
 	try
 	{
@@ -93,8 +89,7 @@ StringNamedValue& PreferencesHelper::getStringNamedValue (
 		if (0 == str)
 		{
 			UTF8String	errorMsg (charset);
-			errorMsg << name.ascii ( )
-			         << " n'est pas une valeur nommée de type chaine de caractères.";
+			errorMsg << name.ascii ( ) << " n'est pas une valeur nommée de type chaine de caractères.";
 			throw Exception (errorMsg);
 		}
 
@@ -102,15 +97,14 @@ StringNamedValue& PreferencesHelper::getStringNamedValue (
 	}
 	catch (...)
 	{
-		StringNamedValue*	str	= new StringNamedValue (name);
+		StringNamedValue*	str	= new StringNamedValue (name, value, comment, overloadable, safeguardable);
 		parent.addNamedValue (str);
 		return *str;
 	}
 }	// PreferencesHelper::getStringNamedValue
 
 
-LongNamedValue& PreferencesHelper::getLongNamedValue (
-									Section& parent, const UTF8String& name)
+LongNamedValue& PreferencesHelper::getLongNamedValue (Section& parent, const UTF8String& name, long value, const UTF8String& comment, bool overloadable, bool safeguardable)
 {
 	try
 	{
@@ -119,8 +113,7 @@ LongNamedValue& PreferencesHelper::getLongNamedValue (
 		if (0 == l)
 		{
 			UTF8String	errorMsg (charset);
-			errorMsg << name.ascii ( )
-			         << " n'est pas une valeur nommée de type entier long.";
+			errorMsg << name.ascii ( ) << " n'est pas une valeur nommée de type entier long.";
 			throw Exception (errorMsg);
 		}
 
@@ -128,15 +121,14 @@ LongNamedValue& PreferencesHelper::getLongNamedValue (
 	}
 	catch (...)
 	{
-		LongNamedValue*	l	= new LongNamedValue (name);
+		LongNamedValue*	l	= new LongNamedValue (name, value, comment, overloadable, safeguardable);
 		parent.addNamedValue (l);
 		return *l;
 	}
 }	// PreferencesHelper::getLongNamedValue
 
 
-UnsignedLongNamedValue& PreferencesHelper::getUnsignedLongNamedValue (
-									Section& parent, const UTF8String& name)
+UnsignedLongNamedValue& PreferencesHelper::getUnsignedLongNamedValue (Section& parent, const UTF8String& name, unsigned long value, const UTF8String& comment, bool overloadable, bool safeguardable)
 {
 	try
 	{
@@ -145,9 +137,7 @@ UnsignedLongNamedValue& PreferencesHelper::getUnsignedLongNamedValue (
 		if (0 == ul)
 		{
 			UTF8String	errorMsg (charset);
-			errorMsg << name.ascii ( )
-			         << " n'est pas une valeur nommée de type entier long "
-			         << "non signé.";
+			errorMsg << name.ascii ( ) << " n'est pas une valeur nommée de type entier long non signé.";
 			throw Exception (errorMsg);
 		}
 
@@ -155,15 +145,14 @@ UnsignedLongNamedValue& PreferencesHelper::getUnsignedLongNamedValue (
 	}
 	catch (...)
 	{
-		UnsignedLongNamedValue*	ul	= new UnsignedLongNamedValue (name);
+		UnsignedLongNamedValue*	ul	= new UnsignedLongNamedValue (name, value, comment, overloadable, safeguardable);
 		parent.addNamedValue (ul);
 		return *ul;
 	}
 }	// PreferencesHelper::getUnsignedLongNamedValue
 
 
-DoubleNamedValue& PreferencesHelper::getDoubleNamedValue (
-									Section& parent, const UTF8String& name)
+DoubleNamedValue& PreferencesHelper::getDoubleNamedValue (Section& parent, const UTF8String& name, double value, const UTF8String& comment, bool overloadable, bool safeguardable)
 {
 	try
 	{
@@ -172,8 +161,7 @@ DoubleNamedValue& PreferencesHelper::getDoubleNamedValue (
 		if (0 == d)
 		{
 			UTF8String	errorMsg (charset);
-			errorMsg << name.ascii ( )
-			         << " n'est pas une valeur nommée de type réel double précision.";
+			errorMsg << name.ascii ( ) << " n'est pas une valeur nommée de type réel double précision.";
 			throw Exception (errorMsg);
 		}
 
@@ -181,27 +169,23 @@ DoubleNamedValue& PreferencesHelper::getDoubleNamedValue (
 	}
 	catch (...)
 	{
-		DoubleNamedValue*	d	= new DoubleNamedValue (name);
+		DoubleNamedValue*	d	= new DoubleNamedValue (name, value, comment, overloadable, safeguardable);
 		parent.addNamedValue (d);
 		return *d;
 	}
 }	// PreferencesHelper::getDoubleNamedValue
 
 
-DoubleTripletNamedValue& PreferencesHelper::getDoubleTripletNamedValue (
-									Section& parent, const UTF8String& name)
+DoubleTripletNamedValue& PreferencesHelper::getDoubleTripletNamedValue (Section& parent, const UTF8String& name, double x, double y, double z, const UTF8String& comment, bool overloadable, bool safeguardable)
 {
 	try
 	{
 		NamedValue&					nv		= parent.getNamedValue (name);
-		DoubleTripletNamedValue*	triplet	= 
-							dynamic_cast<DoubleTripletNamedValue*>(&nv);
+		DoubleTripletNamedValue*	triplet	= dynamic_cast<DoubleTripletNamedValue*>(&nv);
 		if (0 == triplet)
 		{
 			UTF8String	errorMsg (charset);
-			errorMsg << name.ascii ( )
-			         << " n'est pas une valeur nommée de type triplet de "
-			         << "réels double précision.";
+			errorMsg << name.ascii ( ) << " n'est pas une valeur nommée de type triplet de réels double précision.";
 			throw Exception (errorMsg);
 		}
 
@@ -209,25 +193,23 @@ DoubleTripletNamedValue& PreferencesHelper::getDoubleTripletNamedValue (
 	}
 	catch (...)
 	{
-		DoubleTripletNamedValue*	triplet	= new DoubleTripletNamedValue(name);
+		DoubleTripletNamedValue*	triplet	= new DoubleTripletNamedValue(name, x, y, z, comment, overloadable, safeguardable);
 		parent.addNamedValue (triplet);
 		return *triplet;
 	}
 }	// PreferencesHelper::getDoubleTripletNamedValue
 
 
-ColorNamedValue& PreferencesHelper::getColorNamedValue (
-									Section& parent, const UTF8String& name)
+ColorNamedValue& PreferencesHelper::getColorNamedValue (Section& parent, const UTF8String& name, double r, double g, double b, const UTF8String& comment, bool overloadable, bool safeguardable)
 {
 	try
 	{
-		NamedValue&			nv	= parent.getNamedValue (name);
+		NamedValue&			nv		= parent.getNamedValue (name);
 		ColorNamedValue*	color	= dynamic_cast<ColorNamedValue*>(&nv);
 		if (0 == color)
 		{
 			UTF8String	errorMsg (charset);
-			errorMsg << name.ascii ( )
-			         << " n'est pas une valeur nommée de type couleur.";
+			errorMsg << name.ascii ( ) << " n'est pas une valeur nommée de type couleur.";
 			throw Exception (errorMsg);
 		}
 
@@ -235,144 +217,126 @@ ColorNamedValue& PreferencesHelper::getColorNamedValue (
 	}
 	catch (...)
 	{
-		ColorNamedValue*	color	= new ColorNamedValue (name);
+		ColorNamedValue*	color	= new ColorNamedValue (name, r, g, b, comment, overloadable, safeguardable);
 		parent.addNamedValue (color);
 		return *color;
 	}
 }	// PreferencesHelper::getColorNamedValue
 
 
-void PreferencesHelper::updateBoolean (
-			Section& section, const UTF8String& boolName, bool value)
+void PreferencesHelper::updateBoolean (Section& section, const UTF8String& boolName, bool value)
 {
-	BoolNamedValue&	boolean	= 
-				PreferencesHelper::getBooleanNamedValue (section, boolName);
-	boolean.setValue (value);
+	BoolNamedValue&	boolean	= PreferencesHelper::getBooleanNamedValue (section, boolName);
+	if (true == boolean.isOverloadable ( ))	// v 5.7.0
+		boolean.setValue (value);
 }	// PreferencesHelper::updateBoolean
 
 
-void PreferencesHelper::updateBoolean (
-							Section& section, const BoolNamedValue& boolean)
+void PreferencesHelper::updateBoolean (Section& section, const BoolNamedValue& boolean)
 {
-	BoolNamedValue&	b	= 
-		PreferencesHelper::getBooleanNamedValue (section, boolean.getName ( ));
-	b	= boolean;
+	BoolNamedValue&	b	= PreferencesHelper::getBooleanNamedValue (section, boolean.getName ( ), boolean.getValue ( ), boolean.getComment ( ), true, boolean.isSafeguardable ( ));
+	if (true == b.isOverloadable ( ))	// v 5.7.0
+		b	= boolean;
 }	// PreferencesHelper::updateBoolean
 
 
-void PreferencesHelper::updateString (
-	Section& section, const UTF8String& strName, const UTF8String& value)
+void PreferencesHelper::updateString (Section& section, const UTF8String& strName, const UTF8String& value)
 {
-	StringNamedValue&	str	= 
-				PreferencesHelper::getStringNamedValue (section, strName);
-	str.setValue (value);
+	StringNamedValue&	str	= PreferencesHelper::getStringNamedValue (section, strName);
+	if (true == str.isOverloadable ( ))	// v 5.7.0
+		str.setValue (value);
 }	// PreferencesHelper::updateString
 
 
-void PreferencesHelper::updateString (
-								Section& section, const StringNamedValue& str)
+void PreferencesHelper::updateString (Section& section, const StringNamedValue& str)
 {
-	StringNamedValue&	s	= 
-			PreferencesHelper::getStringNamedValue (section, str.getName ( ));
-	s	= str;
+	StringNamedValue&	s	= PreferencesHelper::getStringNamedValue (section, str.getName ( ), str.getValue ( ), str.getComment ( ), true, str.isSafeguardable ( ));
+	if (true == s.isOverloadable ( ))	// v 5.7.0
+		s	= str;
 }	// PreferencesHelper::updateString
 
 
-void PreferencesHelper::updateLong (
-			Section& section, const UTF8String& name, long value)
+void PreferencesHelper::updateLong (Section& section, const UTF8String& name, long value)
 {
-	LongNamedValue&	l	= 
-				PreferencesHelper::getLongNamedValue (section, name);
-	l.setValue (value);
+	LongNamedValue&	l	= PreferencesHelper::getLongNamedValue (section, name);
+	if (true == l.isOverloadable ( ))	// v 5.7.0
+		l.setValue (value);
 }	// PreferencesHelper::updateLong
 
 
-void PreferencesHelper::updateLong (
-			Section& section, const LongNamedValue& value)
+void PreferencesHelper::updateLong (Section& section, const LongNamedValue& value)
 {
-	LongNamedValue&	l	= 
-			PreferencesHelper::getLongNamedValue (section, value.getName ( ));
-	l	= value;
+	LongNamedValue&	l	= PreferencesHelper::getLongNamedValue (section, value.getName ( ), value.getValue ( ), value.getComment ( ), true, value.isSafeguardable ( ));
+	if (true == l.isOverloadable ( ))	// v 5.7.0
+		l	= value;
 }	// PreferencesHelper::updateLong
 
 
-void PreferencesHelper::updateUnsignedLong (
-			Section& section, const UTF8String& name, unsigned long value)
+void PreferencesHelper::updateUnsignedLong (Section& section, const UTF8String& name, unsigned long value)
 {
-	UnsignedLongNamedValue&	ul	= 
-				PreferencesHelper::getUnsignedLongNamedValue (section, name);
-	ul.setValue (value);
+	UnsignedLongNamedValue&	ul	= PreferencesHelper::getUnsignedLongNamedValue (section, name);
+	if (true == ul.isOverloadable ( ))	// v 5.7.0
+		ul.setValue (value);
 }	// PreferencesHelper::updateUnsignedLong
 
 
-void PreferencesHelper::updateUnsignedLong (
-			Section& section, const UnsignedLongNamedValue& value)
+void PreferencesHelper::updateUnsignedLong (Section& section, const UnsignedLongNamedValue& value)
 {
-	UnsignedLongNamedValue&	ul	= 
-			PreferencesHelper::getUnsignedLongNamedValue (
-												section, value.getName ( ));
-	ul	= value;
+	UnsignedLongNamedValue&	ul	= PreferencesHelper::getUnsignedLongNamedValue (section, value.getName ( ), value.getValue ( ), value.getComment ( ), true, value.isSafeguardable ( ));
+	if (true == ul.isOverloadable ( ))	// v 5.7.0
+		ul	= value;
 }	// PreferencesHelper::updateUnsignedLong
 
 
-void PreferencesHelper::updateDouble (
-			Section& section, const UTF8String& name, double value)
+void PreferencesHelper::updateDouble (Section& section, const UTF8String& name, double value)
 {
-	DoubleNamedValue&	d	= 
-				PreferencesHelper::getDoubleNamedValue (section, name);
-	d.setValue (value);
+	DoubleNamedValue&	d	= PreferencesHelper::getDoubleNamedValue (section, name);
+	if (true == d.isOverloadable ( ))	// v 5.7.0
+		d.setValue (value);
 }	// PreferencesHelper::updateDouble
 
 
-void PreferencesHelper::updateDouble (
-			Section& section, const DoubleNamedValue& value)
+void PreferencesHelper::updateDouble (Section& section, const DoubleNamedValue& value)
 {
-	DoubleNamedValue&	d	= 
-			PreferencesHelper::getDoubleNamedValue (section, value.getName ( ));
-	d	= value;
+	DoubleNamedValue&	d	= PreferencesHelper::getDoubleNamedValue (section, value.getName ( ), value.getValue ( ), value.getComment ( ), true, value.isSafeguardable ( ));
+	if (true == d.isOverloadable ( ))	// v 5.7.0
+		d	= value;
 }	// PreferencesHelper::updateDouble
 
 
-void PreferencesHelper::updateDoubleTriplet (
-	Section& section, const UTF8String& name, double x, double y, double z)
+void PreferencesHelper::updateDoubleTriplet (Section& section, const UTF8String& name, double x, double y, double z)
 {
-	DoubleTripletNamedValue&	d	= 
-				PreferencesHelper::getDoubleTripletNamedValue (section, name);
-	d.setValue (x, y, z);
+	DoubleTripletNamedValue&	d	= PreferencesHelper::getDoubleTripletNamedValue (section, name);
+	if (true == d.isOverloadable ( ))	// v 5.7.0
+		d.setValue (x, y, z);
 }	// PreferencesHelper::updateDoubleTriplet
 
 
-void PreferencesHelper::updateDoubleTriplet (
-				Section& section, const DoubleTripletNamedValue& triplet)
+void PreferencesHelper::updateDoubleTriplet (Section& section, const DoubleTripletNamedValue& triplet)
 {
-	DoubleTripletNamedValue&	dt	= 
-			PreferencesHelper::getDoubleTripletNamedValue (
-												section, triplet.getName ( ));
-	dt	= triplet;
+	DoubleTripletNamedValue&	dt	= PreferencesHelper::getDoubleTripletNamedValue (section, triplet.getName ( ), triplet.getX ( ), triplet.getY ( ), triplet.getZ ( ), triplet.getComment ( ), true, triplet.isSafeguardable ( ));
+	if (true == dt.isOverloadable ( ))	// v 5.7.0
+		dt	= triplet;
 }	// PreferencesHelper::updateDoubleTriplet
 
 
-void PreferencesHelper::updateColor (
-				Section& section, const UTF8String& colorName,
-				double red, double green, double blue)
+void PreferencesHelper::updateColor (Section& section, const UTF8String& colorName,double red, double green, double blue)
 {
-	ColorNamedValue&	color	= 
-				PreferencesHelper::getColorNamedValue (section, colorName);
-	color.setValue (red, green, blue);
+	ColorNamedValue&	color	= PreferencesHelper::getColorNamedValue (section, colorName);
+	if (true == color.isOverloadable ( ))	// v 5.7.0
+		color.setValue (red, green, blue);
 }	// PreferencesHelper::updateColor
 
 
-void PreferencesHelper::updateColor (
-				Section& section, const ColorNamedValue& color)
+void PreferencesHelper::updateColor (Section& section, const ColorNamedValue& color)
 {
-	ColorNamedValue&	c	= 
-			PreferencesHelper::getColorNamedValue (section, color.getName ( ));
-	c	= color;
+	ColorNamedValue&	c	= PreferencesHelper::getColorNamedValue (section, color.getName ( ), color.getRed ( ), color.getGreen ( ), color.getBlue ( ), color.getComment ( ), true, color.isSafeguardable ( ));
+	if (true == c.isOverloadable ( ))	// v 5.7.0
+		c	= color;
 }	// PreferencesHelper::updateColor
 
 
-void PreferencesHelper::getBoolean (
-				const Section& section, const UTF8String& name, bool& value)
+void PreferencesHelper::getBoolean (const Section& section, const UTF8String& name, bool& value)
 {
 	try
 	{
@@ -381,9 +345,7 @@ void PreferencesHelper::getBoolean (
 		if (0 == b)
 		{
 			UTF8String	mess (charset);
-			mess << "Booléen " << name
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Booléen " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
@@ -392,16 +354,13 @@ void PreferencesHelper::getBoolean (
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Booléen " << name
-	         << " non trouvé dans la section "
-	         << section.getName ( ) << ".";
+		mess << "Booléen " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getBoolean
 
 
-void PreferencesHelper::getBoolean (
-				const Section& section, BoolNamedValue& value)
+void PreferencesHelper::getBoolean (const Section& section, BoolNamedValue& value)
 {
 	try
 	{
@@ -410,27 +369,26 @@ void PreferencesHelper::getBoolean (
 		if (0 == b)
 		{
 			UTF8String	mess (charset);
-			mess << "Booléen " << value.getName ( )
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Booléen " << value.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
+		{
 			value	= *b;
+			value.setSafeguardable (b->isSafeguardable ( ));	// v 5.7.0
+			value.setOverloadable (b->isOverloadable ( ));		// v 5.7.0
+		}
 	}
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Booléen " << value.getName ( )
-	         << " non trouvé dans la section "
-	         << section.getName ( ) << ".";
+		mess << "Booléen " << value.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getBoolean
 
 
-void PreferencesHelper::getString (
-		const Section& section, const UTF8String& name, UTF8String& value)
+void PreferencesHelper::getString (const Section& section, const UTF8String& name, UTF8String& value)
 {
 	try
 	{
@@ -439,9 +397,7 @@ void PreferencesHelper::getString (
 		if (0 == s)
 		{
 			UTF8String	mess (charset);
-			mess << "Chaine de caractères " << name
-			     << " non trouvée dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Chaine de caractères " << name << " non trouvée dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
@@ -450,16 +406,13 @@ void PreferencesHelper::getString (
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Chaine de caractères " << name
-		     << " non trouvée dans la section "
-		     << section.getName ( ) << ".";
-			ConsoleOutput::cout ( ) << mess << co_endl;
+		mess << "Chaine de caractères " << name << " non trouvée dans la section " << section.getName ( ) << ".";
+		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getString
 
 
-void PreferencesHelper::getString (
-		const Section& section, StringNamedValue& value)
+void PreferencesHelper::getString (const Section& section, StringNamedValue& value)
 {
 	try
 	{
@@ -468,27 +421,26 @@ void PreferencesHelper::getString (
 		if (0 == s)
 		{
 			UTF8String	mess (charset);
-			mess << "Chaine de caractères " << value.getName ( )
-			     << " non trouvée dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Chaine de caractères " << value.getName ( ) << " non trouvée dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
+		{
 			value	= *s;
+			value.setSafeguardable (s->isSafeguardable ( ));	// v 5.7.0
+			value.setOverloadable (s->isOverloadable ( ));		// v 5.7.0
+		}
 	}
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Chaine de caractères " << value.getName ( )
-		     << " non trouvée dans la section "
-		     << section.getName ( ) << ".";
-			ConsoleOutput::cout ( ) << mess << co_endl;
+		mess << "Chaine de caractères " << value.getName ( ) << " non trouvée dans la section " << section.getName ( ) << ".";
+		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getString
 
 
-void PreferencesHelper::getString (
-		const Section& section, const UTF8String& name, string& value)
+void PreferencesHelper::getString (const Section& section, const UTF8String& name, string& value)
 {
 	UTF8String	uValue (value);
 	PreferencesHelper::getString (section, name, uValue);
@@ -497,8 +449,7 @@ void PreferencesHelper::getString (
 }	// PreferencesHelper::getString
 
 
-void PreferencesHelper::getLong (
-				const Section& section, const UTF8String& name, long& value)
+void PreferencesHelper::getLong (const Section& section, const UTF8String& name, long& value)
 {
 	try
 	{
@@ -507,9 +458,7 @@ void PreferencesHelper::getLong (
 		if (0 == l)
 		{
 			UTF8String	mess (charset);
-			mess << "Entier long " << name
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Entier long " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
@@ -518,9 +467,7 @@ void PreferencesHelper::getLong (
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Entier long " << name
-		     << " non trouvé dans la section "
-		     << section.getName ( ) << ".";
+		mess << "Entier long " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getLong
@@ -535,27 +482,26 @@ void PreferencesHelper::getLong (const Section& section, LongNamedValue& value)
 		if (0 == l)
 		{
 			UTF8String	mess (charset);
-			mess << "Entier long " << value.getName ( )
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Entier long " << value.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
+		{
 			value	= *l;
+			value.setSafeguardable (l->isSafeguardable ( ));	// v 5.7.0
+			value.setOverloadable (l->isOverloadable ( ));		// v 5.7.0
+		}
 	}
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Entier long " << value.getName ( )
-		     << " non trouvé dans la section "
-		     << section.getName ( ) << ".";
+		mess << "Entier long " << value.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getLong
 
 
-void PreferencesHelper::getUnsignedLong (
-		const Section& section, const UTF8String& name, unsigned long& value)
+void PreferencesHelper::getUnsignedLong (const Section& section, const UTF8String& name, unsigned long& value)
 {
 	try
 	{
@@ -564,9 +510,7 @@ void PreferencesHelper::getUnsignedLong (
 		if (0 == ul)
 		{
 			UTF8String	mess (charset);
-			mess << "Entier long non signé " << name
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Entier long non signé " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
@@ -575,16 +519,13 @@ void PreferencesHelper::getUnsignedLong (
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Entier long non signé " << name
-		     << " non trouvé dans la section "
-		     << section.getName ( ) << ".";
-			ConsoleOutput::cout ( ) << mess << co_endl;
+		mess << "Entier long non signé " << name << " non trouvé dans la section " << section.getName ( ) << ".";
+		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getUnsignedLong
 
 
-void PreferencesHelper::getUnsignedLong (
-				const Section& section, UnsignedLongNamedValue& value)
+void PreferencesHelper::getUnsignedLong (const Section& section, UnsignedLongNamedValue& value)
 {
 	try
 	{
@@ -593,26 +534,25 @@ void PreferencesHelper::getUnsignedLong (
 		if (0 == ul)
 		{
 			UTF8String	mess (charset);
-			mess << "Entier long non signé " << value.getName ( )
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Entier long non signé " << value.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
 		}
 		else
+		{
 			value	= *ul;
+			value.setSafeguardable (ul->isSafeguardable ( ));	// v 5.7.0
+			value.setOverloadable (ul->isOverloadable ( ));		// v 5.7.0
+		}
 	}
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Entier long non signé " << value.getName ( )
-		     << " non trouvé dans la section "
-		     << section.getName ( ) << ".";
-			ConsoleOutput::cout ( ) << mess << co_endl;
+		mess << "Entier long non signé " << value.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
+		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getUnsignedLong
 
 
-void PreferencesHelper::getDouble (
-			const Section& section, const UTF8String& name, double& value)
+void PreferencesHelper::getDouble (const Section& section, const UTF8String& name, double& value)
 {
 	try
 	{
@@ -621,9 +561,7 @@ void PreferencesHelper::getDouble (
 		if (0 == d)
 		{
 			UTF8String	mess (charset);
-			mess << "Réel double précision " << name
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Réel double précision " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
@@ -632,16 +570,13 @@ void PreferencesHelper::getDouble (
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Réel double précision " << name
-		     << " non trouvé dans la section "
-		     << section.getName ( ) << ".";
+		mess << "Réel double précision " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getDouble
 
 
-void PreferencesHelper::getDouble (
-						const Section& section, DoubleNamedValue& value)
+void PreferencesHelper::getDouble (const Section& section, DoubleNamedValue& value)
 {
 	try
 	{
@@ -650,40 +585,35 @@ void PreferencesHelper::getDouble (
 		if (0 == d)
 		{
 			UTF8String	mess (charset);
-			mess << "Réel double précision " << value.getName ( )
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Réel double précision " << value.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
+		{
 			value	= *d;
+			value.setSafeguardable (d->isSafeguardable ( ));	// v 5.7.0
+			value.setOverloadable (d->isOverloadable ( ));		// v 5.7.0
+		}
 	}
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Réel double précision " << value.getName ( )
-		     << " non trouvé dans la section "
-		     << section.getName ( ) << ".";
+		mess << "Réel double précision " << value.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getDouble
 
 
-void PreferencesHelper::getDoubleTriplet (
-				const Section& section, const UTF8String& name, 
-				double& x, double& y, double& z)
+void PreferencesHelper::getDoubleTriplet (const Section& section, const UTF8String& name, double& x, double& y, double& z)
 {
 	try
 	{
 		NamedValue&					nv	= section.getNamedValue (name);
-		DoubleTripletNamedValue*	dt	= 
-					dynamic_cast<DoubleTripletNamedValue*>(&nv);
+		DoubleTripletNamedValue*	dt	= dynamic_cast<DoubleTripletNamedValue*>(&nv);
 		if (0 == dt)
 		{
 			UTF8String	mess (charset);
-			mess << "Triplet de réels double précision " << name
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Triplet de réels double précision " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
@@ -696,50 +626,41 @@ void PreferencesHelper::getDoubleTriplet (
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Triplet de réels double précision " << name
-		     << " non trouvé dans la section "
-		     << section.getName ( ) << ".";
+		mess << "Triplet de réels double précision " << name << " non trouvé dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getDoubleTriplet
 
 
-void PreferencesHelper::getDoubleTriplet (
-				const Section& section, DoubleTripletNamedValue& triplet)
+void PreferencesHelper::getDoubleTriplet (const Section& section, DoubleTripletNamedValue& triplet)
 {
 	try
 	{
-		NamedValue&					nv	= 
-							section.getNamedValue (triplet.getName ( ));
-		DoubleTripletNamedValue*	dt	= 
-					dynamic_cast<DoubleTripletNamedValue*>(&nv);
+		NamedValue&					nv	= section.getNamedValue (triplet.getName ( ));
+		DoubleTripletNamedValue*	dt	= dynamic_cast<DoubleTripletNamedValue*>(&nv);
 		if (0 == dt)
 		{
 			UTF8String	mess (charset);
-			mess << "Triplet de réels double précision " 
-			     << triplet.getName ( )
-			     << " non trouvé dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Triplet de réels double précision " << triplet.getName ( )<< " non trouvé dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
+		{
 			triplet	= *dt;
+			triplet.setSafeguardable (dt->isSafeguardable ( ));	// v 5.7.0
+			triplet.setOverloadable (dt->isOverloadable ( ));		// v 5.7.0
+		}
 	}
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Triplet de réels double précision " 
-		     << triplet.getName ( )
-		     << " non trouvé dans la section "
-		     << section.getName ( ) << ".";
+		mess << "Triplet de réels double précision " << triplet.getName ( ) << " non trouvé dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getDoubleTriplet
 
 
-void PreferencesHelper::getColor (
-				const Section& section, const UTF8String& name, 
-				double& r, double& g, double& b)
+void PreferencesHelper::getColor (const Section& section, const UTF8String& name, double& r, double& g, double& b)
 {
 	try
 	{
@@ -748,9 +669,7 @@ void PreferencesHelper::getColor (
 		if (0 == c)
 		{
 			UTF8String	mess (charset);
-			mess << "Couleur " << name 
-			     << " non trouvée dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Couleur " << name  << " non trouvée dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
@@ -763,16 +682,13 @@ void PreferencesHelper::getColor (
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Couleur " << name 
-		     << " non trouvée dans la section "
-		     << section.getName ( ) << ".";
+		mess << "Couleur " << name << " non trouvée dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getColor
 
 
-void PreferencesHelper::getColor (
-					const Section& section, ColorNamedValue& color)
+void PreferencesHelper::getColor (const Section& section, ColorNamedValue& color)
 {
 	try
 	{
@@ -781,20 +697,20 @@ void PreferencesHelper::getColor (
 		if (0 == c)
 		{
 			UTF8String	mess (charset);
-			mess << "Couleur " << color.getName ( ) 
-			     << " non trouvée dans la section "
-			     << section.getName ( ) << ".";
+			mess << "Couleur " << color.getName ( ) << " non trouvée dans la section " << section.getName ( ) << ".";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 		}
 		else
+		{
 			color	= *c;
+			color.setSafeguardable (c->isSafeguardable ( ));	// v 5.7.0
+			color.setOverloadable (c->isOverloadable ( ));		// v 5.7.0
+		}
 	}
 	catch (...)
 	{
 		UTF8String	mess (charset);
-		mess << "Couleur " << color.getName ( ) 
-		     << " non trouvée dans la section "
-		     << section.getName ( ) << ".";
+		mess << "Couleur " << color.getName ( ) << " non trouvée dans la section " << section.getName ( ) << ".";
 		ConsoleOutput::cout ( ) << mess << co_endl;
 	}
 }	// PreferencesHelper::getColor

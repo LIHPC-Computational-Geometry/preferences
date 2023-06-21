@@ -1,7 +1,34 @@
+Version 6.2.0 : 21/06/23
+===============
+
+Sortie du projet GUIToolkits.
+
+
+Version 6.1.0 : 31/03/23
+===============
+
+Portage GitHub environnement podman/spack/tests CI.
+
+
+Version 6.0.0 : 10/01/23
+===============
+
+Intégration au projet GUIToolkits.
+
+
+Version 5.7.0 : 16/12/22
+===============
+
+Les éléments peuvent être non surchargeables et/ou non enregistrables. Ces propriétés sont utiles pour
+des ressources communes aux utilisateurs.
+
+XMLLoader v 0.3.0 (propriétés overloadable et safeguardable).
+
+
 Version 5.6.2 : 25/11/22
 ===============
 
-Un peu de nettoyage (hors sources).
+Suppression répertoire module.
 
 
 Version 5.6.1 : 06/05/22
@@ -33,7 +60,7 @@ Utilisation de NO_DEFAULT_PATH lors des find_package(Qt 5 ...)
 Version 5.5.7 : 10/09/21
 ===============
 
-Suppression de mini gros-mots et de balises EXPURGE.
+Divers nettoyage.
 
 
 Version 5.5.6 : 30/08/21
@@ -124,8 +151,7 @@ Version 5.4.0 : 04/06/20 Révisions svn 382/383
 ===============
 
 Fin réintégration en environnement CEA suite confinement covid-19.
-Procédure d'exportation ouverte des sources : cible export avec script export.sh (réalisation d'un tarball filtré,
-sans gros mots, reposant sur la commande expurge réalisée à cet effet et sur la commande tar).
+Procédure d'exportation ouverte des sources : cible export avec script export.sh.
 cmake/workaround.cmake utilise maintenant la commande lsb_release -d à la place du tandem uname/commande locale. A
 finaliser sur calculateur.
 

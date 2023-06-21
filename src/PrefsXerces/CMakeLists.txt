@@ -1,11 +1,13 @@
 set (CURRENT_PACKAGE_NAME "PrefsXerces")
 set (CURRENT_PACKAGE_MACRO_NAME "PREFERENCES")
 
+find_package (GUIToolkitsVariables)
+
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
-include (${CMAKE_SOURCE_DIR}/cmake/common.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
 #include (FindXercesC)	# Non car on ne peut pas choisir la version
-include (${CMAKE_SOURCE_DIR}/cmake/XercesC.cmake)
-include (${CMAKE_SOURCE_DIR}/cmake/workarounds.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/XercesC.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
 
 find_package (TkUtil REQUIRED)
 
@@ -77,6 +79,7 @@ configure_package_config_file (cmake/${CMAKE_PACKAGE_CONFIG_NAME}.cmake.in ${CMA
 install (EXPORT ${CMAKE_PACKAGE_TARGETS_NAME}
 	FILE ${CMAKE_PACKAGE_TARGETS_BASENAME} NAMESPACE ${CMAKE_MODULE_NAMESPACE}
 	DESTINATION ${ConfigPackageLocation} PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ)
+	
 # Copie des fichiers PrefsXercesConfig.cmake et PrefsXercesConfigVersion.cmake dans prefix/lib/PrefsXerces/cmake :
 install (FILES ${CMAKE_PACKAGE_CONFIG_FILE} ${CMAKE_PACKAGE_VERSION_FILE} DESTINATION ${ConfigPackageLocation} PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ)
 

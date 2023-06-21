@@ -1,11 +1,13 @@
 set (CURRENT_PACKAGE_NAME "PrefsQt")
 set (CURRENT_PACKAGE_MACRO_NAME "PREFERENCES")
 
-include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
-include (${CMAKE_SOURCE_DIR}/cmake/common.cmake)
-include (${CMAKE_SOURCE_DIR}/cmake/workarounds.cmake)
+find_package (GUIToolkitsVariables)
 
-find_package (QtUtil 5 REQUIRED)
+include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
+
+find_package (QtUtil 6 REQUIRED)
 find_package(Qt5Core 5 NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
 
 file (GLOB HEADERS public/${CURRENT_PACKAGE_NAME}/*.h)

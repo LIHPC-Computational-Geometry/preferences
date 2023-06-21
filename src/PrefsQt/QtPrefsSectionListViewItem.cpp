@@ -79,22 +79,20 @@ void QtPrefsSectionListViewItem::createChildren ( )
 	Section&	section	= getSection ( );
 
 	vector<Section*>	subsections	= section.getSections ( );
-	for (vector<Section*>::iterator its = subsections.begin ( );
-	     subsections.end ( ) != its; its++)
+	for (vector<Section*>::iterator its = subsections.begin ( ); subsections.end ( ) != its; its++)
 	{
-		QtPrefsSectionListViewItem*	item	=
-			new QtPrefsSectionListViewItem (this, *its, isEditable ( ));
+		const bool	editable	= (true == isEditable ( )) && (true == (*its)->isOverloadable ( )) ? true : false;	// v 5.7.0
+		QtPrefsSectionListViewItem*	item	= new QtPrefsSectionListViewItem (this, *its, editable);
 		item->createChildren ( );
 		item->setNameValidator (new QtXMLNameValidator (0));
 		insertItem (item);
 	}	// for (vector<Section*>::iterator its = subsections.begin ( );
 
 	vector<NamedValue*>	namedValues	= section.getNamedValues ( );
-	for (vector<NamedValue*>::iterator itnv = namedValues.begin ( );
-	     namedValues.end ( ) != itnv; itnv++)
+	for (vector<NamedValue*>::iterator itnv = namedValues.begin ( ); namedValues.end ( ) != itnv; itnv++)
 	{
-		QtPrefsNamedValueListViewItem*	item	=
-			new QtPrefsNamedValueListViewItem (this, *itnv, isEditable ( ));
+		const bool	editable	= (true == isEditable ( )) && (true == (*itnv)->isOverloadable ( )) ? true : false;	// v 5.7.0
+		QtPrefsNamedValueListViewItem*	item	= new QtPrefsNamedValueListViewItem (this, *itnv, editable);
 		item->setNameValidator (new QtXMLNameValidator (0));
 		insertItem (item);
 	}	// for (vector<NamedValue*>::iterator itnv = namedValues.begin ( );

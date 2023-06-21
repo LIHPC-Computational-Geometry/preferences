@@ -38,8 +38,7 @@ class QtPrefsListViewItem : public QTreeWidgetItem
 	virtual IN_PREFS Element& getElement ( ) const;
 
 	/**
-	 * Vérifie que le nom saisi par l'utilisateur est valide. Si oui,
-	 * l'élément associé est renommé.
+	 * Vérifie que le nom saisi par l'utilisateur est valide. Si oui, l'élément associé est renommé.
 	 * @exception	Lève une exception en cas d'erreur.
 	 */
 	virtual void nameModified ( );
@@ -51,15 +50,13 @@ class QtPrefsListViewItem : public QTreeWidgetItem
 	virtual void setComment (const IN_UTIL UTF8String& comment);
 
 	/**
-	 * Modifie le commentaire associé à l'élément conformément à la saisie de
-	 * l'utilisateur.
+	 * Modifie le commentaire associé à l'élément conformément à la saisie de l'utilisateur.
 	 * @exception	Lève une exception en cas d'erreur.
 	 */
 	virtual void commentModified ( );
 
 	/**
-	 * @return		true si l'élément peut être modifié, sinon 
-	 *				false.
+	 * @return		true si l'élément peut être modifié, sinon false.
 	 */
 	virtual bool isEditable ( ) const
 	{ return _editable; }
@@ -71,8 +68,7 @@ class QtPrefsListViewItem : public QTreeWidgetItem
 
 	/**
 	 * Détruit le validateur précédant s'il n'a pas de parent.
-	 * @param		Validateur de nom d'éléments à utiliser. Sera détruit
-	 *				par cette instance s'il n'a pas de parent. Peut être nul
+	 * @param		Validateur de nom d'éléments à utiliser. Sera détruit par cette instance s'il n'a pas de parent. Peut être nul
 	 *				(=> absence de validation).
 	 */
 	virtual void setNameValidator (QValidator* validator);
