@@ -1,7 +1,9 @@
-Version 6.2.0 : 21/06/23
+Version 6.2.0 : 23/06/23
 ===============
 
 Sortie du projet GUIToolkits.
+
+Les includes (XercesC.cmake) sont remplacés par des find_package/dependency (XercesC)
 
 
 Version 6.1.0 : 31/03/23

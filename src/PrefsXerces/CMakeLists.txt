@@ -6,7 +6,8 @@ find_package (GUIToolkitsVariables)
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
 #include (FindXercesC)	# Non car on ne peut pas choisir la version
-include (${GUIToolkitsVariables_CMAKE_DIR}/XercesC.cmake)
+#include (${GUIToolkitsVariables_CMAKE_DIR}/XercesC.cmake)
+find_package (XercesC REQUIRED)
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
 
 find_package (TkUtil REQUIRED)
@@ -23,18 +24,18 @@ set_property (TARGET PrefsXerces PROPERTY SOVERSION ${PREFERENCES_MAJOR_VERSION}
 
 set (PREFS_XERCES_PUBLIC_FLAGS "-DUSING_NAMESPACES -DMULTITHREADED_APPLICATION")
 set (PREFS_XERCES_PRIVATE_FLAGS "-DPREFS_BASE_VERSION=\"${PREFERENCES_VERSION}\"")
-if (Xerces-C++_CFLAGS)
-	target_compile_options (PrefsXerces PUBLIC "${Xerces-C++_CFLAGS}")
-endif (Xerces-C++_CFLAGS)
+#if (Xerces-C++_CFLAGS)
+#	target_compile_options (PrefsXerces PUBLIC "${Xerces-C++_CFLAGS}")
+#endif (Xerces-C++_CFLAGS)
 
 target_compile_definitions (PrefsXerces PUBLIC ${PREFS_XERCES_PUBLIC_FLAGS})
 target_compile_definitions (PrefsXerces PRIVATE ${PREFS_XERCES_PRIVATE_FLAGS})
 target_include_directories (PrefsXerces PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/public>$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>)
 target_include_directories (PrefsXerces PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../PrefsCore/public>$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>)
-if (Xerces-C++_INCLUDE_DIR)
-	target_include_directories (PrefsXerces PRIVATE ${Xerces-C++_INCLUDE_DIR})
-endif (Xerces-C++_INCLUDE_DIR)
-target_link_libraries (PrefsXerces PUBLIC PrefsCore ${Xerces-C++_LINK_LIBRARIES})
+#if (Xerces-C++_INCLUDE_DIR)
+#	target_include_directories (PrefsXerces PRIVATE ${Xerces-C++_INCLUDE_DIR})
+#endif (Xerces-C++_INCLUDE_DIR)
+target_link_libraries (PrefsXerces PUBLIC PrefsCore XercesC::XercesC)
 # Etre capable une fois installée de retrouver TkUtil, XercesC, ... :
 # (Rem : en son absence on a Set runtime path of "/tmp/pignerol/install/lib/libPrefsXerces.so.5.0.0" to "") ...
 set_target_properties (PrefsXerces PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1 INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})

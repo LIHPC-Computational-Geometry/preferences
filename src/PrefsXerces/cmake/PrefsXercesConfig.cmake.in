@@ -1,8 +1,8 @@
 include(CMakeFindDependencyMacro)
 find_dependency (PrefsCore)
-#find_dependency (XercesC)
-include(FindPkgConfig)
-pkg_check_modules (Xerces-C++ REQUIRED xerces-c)
+find_dependency (XercesC)
+#include(FindPkgConfig)
+#pkg_check_modules (Xerces-C++ REQUIRED xerces-c)
 
 @PACKAGE_INIT@
 
