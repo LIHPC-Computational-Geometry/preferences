@@ -21,11 +21,12 @@ class StringNamedValue : public NamedValue
 	 * @param		Nom de l'élément.
 	 * @param		Valeur de l'élément.
 	 * @param		Eventuel commentaire associé à la valeur nommée.
+	 * @param		Caractère surchargeable de l'élément.
+	 * @param		Caractère enregistrable de l'élément.
 	 */
-	StringNamedValue (const IN_UTIL UTF8String& name, 
-			const IN_UTIL UTF8String& value = IN_UTIL UTF8String ( ),
-			const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ))
-		: NamedValue (name, comment), _value (value)
+	StringNamedValue (const IN_UTIL UTF8String& name, const IN_UTIL UTF8String& value = IN_UTIL UTF8String ( ),
+			const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ), bool overloadable = true, bool safeguardable = true)
+		: NamedValue (name, comment, overloadable, safeguardable), _value (value)
 	{ }
 
 	/**
@@ -60,6 +61,7 @@ class StringNamedValue : public NamedValue
 
 	/**
 	 * @param		Nouvelle valeur, sous forme de chaine de caractères.
+	 * @exception	Lève une exception si la valeur n'est pas surchargeable.
 	 */
 	virtual void setStrValue (const IN_STD string& value);
 
@@ -77,6 +79,7 @@ class StringNamedValue : public NamedValue
 
 	/**
 	 * @param		Nouvelle valeur associée
+	 * @exception	Lève une exception si la valeur n'est pas surchargeable.
 	 */
 	virtual void setValue (const IN_UTIL UTF8String& value);
 

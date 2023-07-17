@@ -42,6 +42,8 @@ string DoubleNamedValue::getStrValue ( ) const
 
 void DoubleNamedValue::setStrValue (const string& value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	double		val;
 	istringstream	stream (value.c_str ( ));
 
@@ -50,8 +52,7 @@ void DoubleNamedValue::setStrValue (const string& value)
 	    (false == stream.eof ( )))
 	{
 		UTF8String	msg (charset);
-		msg << "Impossible de convertir la chaine de caractères "
-		    << value << " en double.";
+		msg << "Impossible de convertir la chaine de caractères " << value << " en double.";
 		throw Exception (msg);
 	}	// if ((true == stream.fail ( )) || ...
 
@@ -61,6 +62,8 @@ void DoubleNamedValue::setStrValue (const string& value)
 
 void DoubleNamedValue::setValue (double value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	_value	= value;
 }	// DoubleNamedValue::setValue
 

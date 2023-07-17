@@ -27,10 +27,11 @@ ColorNamedValue& ColorNamedValue::operator = (const ColorNamedValue& color)
 
 
 ColorNamedValue::ColorNamedValue (const UTF8String& name, double red, double green, double blue,
-                                  const UTF8String& comment)
-	: DoubleTripletNamedValue (name, 0., 0., 0., comment)
+                                  const UTF8String& comment, bool overloadable, bool safeguardable)
+	: DoubleTripletNamedValue (name, 0., 0., 0., comment, true, safeguardable)
 {
 	setValue (red, green, blue);
+	setOverloadable (overloadable);
 }	// ColorNamedValue::ColorNamedValue
 
 
@@ -42,6 +43,8 @@ Element* ColorNamedValue::clone ( ) const
 
 void ColorNamedValue::setStrValue (const string& value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	double		red, green, blue;
 	char		p1, p2, c1, c2;
 	istringstream	stream (value.c_str ( ));
@@ -64,6 +67,8 @@ void ColorNamedValue::setStrValue (const string& value)
 
 void ColorNamedValue::setValue (double red, double green, double blue)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	evaluateValue (red, "rouge");
 	evaluateValue (green, "vert");
 	evaluateValue (blue, "bleu");
@@ -87,8 +92,7 @@ void ColorNamedValue::evaluateValue (double value, const string& name)
 		return;
 
 	UTF8String	errorMsg (charset);
-	errorMsg << "La composante " << name << " (" << value << ") de la couleur "
-	         << getName ( ) << " n'est pas comprise entre 0 et 1.";
+	errorMsg << "La composante " << name << " (" << value << ") de la couleur " << getName ( ) << " n'est pas comprise entre 0 et 1.";
 	throw Exception (errorMsg);
 }	// ColorNamedValue::evaluateValue
 

@@ -19,15 +19,14 @@ class ColorNamedValue : public DoubleTripletNamedValue
 	/**
 	 * Constructeur.
 	 * @param		Nom de l'élément.
-	 * @param		Composantes RGB de la couleur. Ces composantes doivent
-	 * être comprises entre 0 et 1.
+	 * @param		Composantes RGB de la couleur. Ces composantes doivent être comprises entre 0 et 1.
 	 * @param		Eventuel commentaire associé à la valeur nommée.
-	 * @exception	Une exception est levée si une composante au moins n'est
-	 *				pas comprise entre 0 et 1.
+	 * @param		Caractère surchargeable de l'élément.
+	 * @param		Caractère enregistrable de l'élément.
+	 * @exception	Une exception est levée si une composante au moins n'est pas comprise entre 0 et 1.
 	 */
-	ColorNamedValue (const IN_UTIL UTF8String& name, 
-			double red = 0., double green = 0., double blue = 0.,
-			const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ));
+	ColorNamedValue (const IN_UTIL UTF8String& name, double red = 0., double green = 0., double blue = 0.,
+	                 const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ), bool overloadable = true, bool safeguardable = true);
 
 	/**
 	 * Constructeur de copie.
@@ -55,9 +54,8 @@ class ColorNamedValue : public DoubleTripletNamedValue
 	virtual Element* clone ( ) const;
 
 	/**
-	 * @param		Nouvelle couleur, sous forme de chaine de caractères
-	 *				"(r, g, b)".
-	 * @exception	Lève une exception si la valeur est incorrecte.
+	 * @param		Nouvelle couleur, sous forme de chaine de caractères "(r, g, b)".
+	 * @exception	Lève une exception si la valeur est incorrecte ou non surchargeable.
 	 */
 	virtual void setStrValue (const IN_STD string& value);
 
@@ -79,6 +77,7 @@ class ColorNamedValue : public DoubleTripletNamedValue
 
 	/**
 	 * @param		Nouvelle valeur associée
+	 * @exception	Lève une exception si la valeur est incorrecte ou non surchargeable.
 	 */
 	virtual void setValue (double red, double green, double blue);
 
@@ -100,8 +99,7 @@ class ColorNamedValue : public DoubleTripletNamedValue
 	/**
 	 * @param			Composante à évaluer
 	 * @param			Nom de la composante à évaluer
-	 * @exception		Lève une exception si la composante RGB reçue en 
-	 *					argument n'est pas comprise entre 0 et 1.
+	 * @exception		Lève une exception si la composante RGB reçue en  argument n'est pas comprise entre 0 et 1.
 	 */
 	virtual void evaluateValue (double value, const IN_STD string& name);
 };	// class ColorNamedValue

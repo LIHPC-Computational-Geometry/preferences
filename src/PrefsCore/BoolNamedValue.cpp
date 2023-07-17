@@ -39,6 +39,8 @@ string BoolNamedValue::getStrValue ( ) const
 
 void BoolNamedValue::setStrValue (const string& value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	if (trueStr == value)
 		setValue (true);
 	else if (falseStr == value)
@@ -46,8 +48,7 @@ void BoolNamedValue::setStrValue (const string& value)
 	else
 	{
 		UTF8String	msg (charset);
-		msg << "Impossible de convertir la chaine de caractères "
-		    << value << " en booléen.";
+		msg << "Impossible de convertir la chaine de caractères " << value << " en booléen.";
 		throw Exception (msg);
 	}
 }	// BoolNamedValue::setStrValue
@@ -55,6 +56,8 @@ void BoolNamedValue::setStrValue (const string& value)
 
 void BoolNamedValue::setValue (bool value)
 {
+	checkForModification (true);	// v 5.7.0
+	
 	_value	= value;
 }	// BoolNamedValue::setValue
 

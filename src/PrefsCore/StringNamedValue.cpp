@@ -39,6 +39,8 @@ void StringNamedValue::setStrValue (const string& value)
 
 void StringNamedValue::setValue (const UTF8String& value)
 {
+	checkForModification (true);	// v 5.7.0
+
 	_value	= value;
 }	// StringNamedValue::setValue
 

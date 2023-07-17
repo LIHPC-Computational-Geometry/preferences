@@ -1,4 +1,5 @@
 #include "PrefsQt/QtPrefsNamedValueListViewItem.h"
+#include <QtUtil/QtObjectSignalBlocker.h>
 
 #include <assert.h>
 
@@ -12,6 +13,7 @@ QtPrefsNamedValueListViewItem::QtPrefsNamedValueListViewItem (
 	: QtPrefsListViewItem (parent, namedValue, editable)
 {
 	assert ((0 != namedValue) && "QtPrefsNamedValueListViewItem::QtPrefsNamedValueListViewItem : null named value.");
+	QtObjectSignalBlocker	blocker (treeWidget ( )->model ( ));	// v 5.7.0
 	setText (1, namedValue->getStrValue ( ).c_str ( ));
 	if (true == editable)
 		setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);

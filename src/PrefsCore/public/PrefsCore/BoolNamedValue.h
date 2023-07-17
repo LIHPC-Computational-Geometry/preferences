@@ -21,11 +21,12 @@ class BoolNamedValue : public NamedValue
 	 * @param		Nom de l'élément.
 	 * @param		Valeur de l'élément.
 	 * @param		Eventuel commentaire associé à la valeur nommée.
+	 * @param		Caractère surchargeable de l'élément.
+	 * @param		Caractère enregistrable de l'élément.
 	 */
-	BoolNamedValue (
-	         const IN_UTIL UTF8String& name, bool value = false,
-	         const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ))
-		: NamedValue (name, comment), _value (value)
+	BoolNamedValue (const IN_UTIL UTF8String& name, bool value = false, const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ),
+	                bool overloadable = true, bool safeguardable = true)
+		: NamedValue (name, comment, overloadable, safeguardable), _value (value)
 	{ }
 
 	/**
@@ -61,7 +62,7 @@ class BoolNamedValue : public NamedValue
 
 	/**
 	 * @param		Nouvelle valeur, sous forme de chaine de caractères.
-	 * @exception	Lève une exception si la valeur est incorrecte.
+	 * @exception	Lève une exception si la valeur est incorrecte ou non surchargeable.
 	 */
 	virtual void setStrValue (const IN_STD string& value);
 
@@ -81,6 +82,7 @@ class BoolNamedValue : public NamedValue
 
 	/**
 	 * @param		Nouvelle valeur associée
+	 * @exception	Lève une exception si la valeur est incorrecte ou non surchargeable.
 	 */
 	virtual void setValue (bool value);
 

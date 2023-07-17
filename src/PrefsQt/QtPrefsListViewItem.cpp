@@ -1,5 +1,6 @@
 #include "PrefsQt/QtPrefsListViewItem.h"
 #include "PrefsQt/QtPrefsSectionListViewItem.h"
+#include <QtUtil/QtObjectSignalBlocker.h>
 #include <QtUtil/QtUnicodeHelper.h>
 #include <TkUtil/Exception.h>
 
@@ -11,33 +12,33 @@ USING_UTIL
 USING_PREFS
 
 
-QtPrefsListViewItem::QtPrefsListViewItem (
-					QTreeWidget* parent, Element* element, bool editable)
-	: QTreeWidgetItem (parent),
-	  _element (element), _editable (editable), _nameValidator (0)
+QtPrefsListViewItem::QtPrefsListViewItem (QTreeWidget* parent, Element* element, bool editable)
+	: QTreeWidgetItem (parent), _element (element), _editable (editable), _nameValidator (0)
 {
 	assert ((0 != element) && "QtPrefsListViewItem::QtPrefsListViewItem : null element.");
+	QtObjectSignalBlocker	blocker (treeWidget ( )->model ( ));	// v 5.7.0
 	setText (0, UTF8TOQSTRING (_element->getName( )));
 	setText (2, UTF8TOQSTRING (_element->getComment ( )));
 	if (true == editable)
 		setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
 	else
-		setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+//		setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		setFlags (Qt::ItemIsSelectable);	// v 5.7.0 => grayed
 }	// QtPrefsListViewItem::QtPrefsListViewItem
 
 
-QtPrefsListViewItem::QtPrefsListViewItem (
-			QtPrefsSectionListViewItem* parent, Element* element, bool editable)
-	: QTreeWidgetItem (parent),
-	   _element (element), _editable (editable), _nameValidator (0)
+QtPrefsListViewItem::QtPrefsListViewItem (QtPrefsSectionListViewItem* parent, Element* element, bool editable)
+	: QTreeWidgetItem (parent), _element (element), _editable (editable), _nameValidator (0)
 {
 	assert ((0 != element) && "QtPrefsListViewItem::QtPrefsListViewItem : null element.");
+	QtObjectSignalBlocker	blocker (treeWidget ( )->model ( ));	// v 5.7.0
 	setText (0, UTF8TOQSTRING (_element->getName( )));
 	setText (2, UTF8TOQSTRING (_element->getComment ( )));
 	if (true == editable)
 		setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
 	else
-		setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+//		setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		setFlags (Qt::ItemIsSelectable);	// v 5.7.0 => grayed
 }	// QtPrefsListViewItem::QtPrefsListViewItem
 
 
@@ -82,9 +83,7 @@ void QtPrefsListViewItem::nameModified ( )
 
 
 	if (true == getElement ( ).hasParent ( ))
-		getElement ( ).getParent ( ).renameElement (
-						getElement ( ).getName ( ), 
-						QtUnicodeHelper::qstringToUTF8String (name));
+		getElement ( ).getParent ( ).renameElement (getElement ( ).getName ( ), QtUnicodeHelper::qstringToUTF8String (name));
 }	// QtPrefsListViewItem::nameModified
 
 
@@ -98,8 +97,7 @@ void QtPrefsListViewItem::setComment (const UTF8String& comment)
 
 void QtPrefsListViewItem::commentModified ( )
 {
-	getElement ( ).setComment (
-						QtUnicodeHelper::qstringToUTF8String (text (2)));
+	getElement ( ).setComment (QtUnicodeHelper::qstringToUTF8String (text (2)));
 }	// QtPrefsListViewItem::commentModified
 
 

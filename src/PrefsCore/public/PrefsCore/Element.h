@@ -23,13 +23,14 @@ class Section;
  * <LI>Son nom,
  * <LI>Son type,
  * <LI>Son éventuel parent,
- * <LI>Son éventuel commentaire associé.
- * <LI>Des éventuelles informations associées à l'origine de l'élément,
- * propres au moyen de persistance utilisé ou à l'application.
+ * <LI>Son éventuel commentaire associé,
+ * <LI>Des éventuelles informations associées à l'origine de l'élément, propres au moyen de persistance utilisé ou à l'application,
+ * <LI>Son aptitude à être surchargé (valeur modifiée),
+ * <LI>Son aptitude à être enregistré (une ressource "système" partagée par l'ensemble des utilisateurs, peut ne pas être enregistrable
+ * par les utilisateurs).
  * </UL>
- * <P>Cette classe permet également de caractériser tout élément par un type
- * propre à l'application et à son environnement applicatif. Ce type peut par
- * exemple être un conteneur représenté par la classe Section.
+ * <P>Cette classe permet également de caractériser tout élément par un type propre à l'application et à son environnement applicatif.
+ * Ce type peut par exemple être un conteneur représenté par la classe Section.
  * </P>
  * @author		Charles PIGNEROL, CEA/DAM/DSSI
  */
@@ -47,25 +48,58 @@ class Element
 	{ }
 
 	/**
-	 * @return		Une chaine de caractères décrivant le type de l'élément au
-	 *				sens de cette API ("section", "double", ...).
+	 * @return		Une chaine de caractères décrivant le type de l'élément au sens de cette API ("section", "double", ...).
 	 */
 	virtual IN_STD string getType ( ) const = 0;
 
 	/**
-	 * @return		Une chaine de caractères décrivant le type de l'élément au
-	 *				sens de l'application et de son environnement applicatif.
+	 * @return		Une chaine de caractères décrivant le type de l'élément au sens de l'application et de son environnement applicatif.
 	 *				Retourne une chaine vide par défaut.
 	 * @see			setAppType
 	 */
 	virtual const IN_UTIL UTF8String& getAppType ( ) const;
 
 	/**
-	 * @param		Chaine de caractères décrivant le type de l'élément au
-	 *				sens de l'application et de son environnement applicatif.
+	 * @param		Chaine de caractères décrivant le type de l'élément au sens de l'application et de son environnement applicatif.
 	 */
 	virtual void setAppType (const IN_UTIL UTF8String& appType);
 
+	/**
+	 * @return		true si l'élément et son éventuel parent sont surchargeables, false dans le cas contraire.
+	 */
+	virtual bool isOverloadable ( ) const;					// v 5.7.0
+	
+	/**
+	 * @param		true si l'élément est surchargeable, false dans le cas contraire.
+	 * @warning		<B>A usage des loaders uniquement, pour éviter de brider l'API avec le mot clé <I>friend</I></B>.
+	 */
+	virtual void setOverloadable (bool overloable);			// v 5.7.0
+	
+	/**
+	 * @return		true si l'élement est surchargeable, false dans le cas contraire.
+	 * @exception	Lève une exception si l'élément n'est pas surchargeable et si raise vaut true.
+	 * @see			isOverloadable
+	 */
+	virtual bool checkForModification (bool raise = true);	// v 5.7.0
+
+	/**
+	 * @return		true si l'élément est enregistrable, false dans le cas contraire.
+	 */
+	virtual bool isSafeguardable ( ) const;					// v 5.7.0
+	
+	/**
+	 * @param		true si l'élément est enregistrable, false dans le cas contraire.
+	 * @warning		<B>A usage des loaders uniquement, pour éviter de brider l'API avec le mot clé <I>friend</I></B>.
+	 */
+	virtual void setSafeguardable (bool safeguardable);		// v 5.7.0
+	
+	/**
+	 * @return		true si l'élement et son éventuel parent sont enregistrables, false dans le cas contraire.
+	 * @exception	Lève une exception si l'élément n'est pas enregistrable et si raise vaut true.
+	 * @see			isSafeguardable
+	 */
+	virtual bool checkForSafeguard (bool raise = true);		// v 5.7.0
+	
 	/**
 	 * @return		Le nom de l'élément.
 	 */
@@ -80,8 +114,7 @@ class Element
 
 	/**
 	 * @return		Le parent de l'élément.
-	 * @exception	Une exception est levée si l'élément n'a pas de
-	 *				parent.
+	 * @exception	Une exception est levée si l'élément n'a pas de parent.
 	 */
 	virtual Section& getParent ( ) const;
 
@@ -101,14 +134,12 @@ class Element
 	virtual bool hasComment ( ) const;
 
 	/**
-	 * @return		true si l'élément est "imprimable" en caractères ASCII,
-	 *				false dans le cas contraire.
+	 * @return		true si l'élément est "imprimable" en caractères ASCII, false dans le cas contraire.
 	 */
 	virtual bool isAscii ( ) const;
 
 	/**
-	 * @return		true si l'élément est "imprimable" en caractères ISO 8859,
-	 *				false dans le cas contraire.
+	 * @return		true si l'élément est "imprimable" en caractères ISO 8859, false dans le cas contraire.
 	 */
 	virtual bool isIso ( ) const;
 
@@ -135,8 +166,7 @@ class Element
 		public :
 
 		/**
-		 * @param		Nom du moyen de persistance, de l'application, ...
-		 *				à l'origine de cet élément.
+		 * @param		Nom du moyen de persistance, de l'application, ... à l'origine de cet élément.
 		 */
 		OriginInfos (const IN_UTIL UTF8String& name);
 
@@ -181,19 +211,17 @@ class Element
 
 		/** Le nom du moyen de persistance, de l'application, ... */
 		IN_UTIL UTF8String			_name;
-	};
+	};	// class OriginInfos
 
 
 	/**
-	 * @param		Informations sur le moyen de persistance ou sur
-	 *				l'application associées à l'instance. Ces informations
+	 * @param		Informations sur le moyen de persistance ou sur l'application associées à l'instance. Ces informations
 	 *				sont adoptées et de ce fait détruites par l'instance.
 	 */
 	virtual void setOriginInfos (OriginInfos* infos);
 
 	/**
-	 * @return		Les éventuelles informations sur le moyen de persistance ou 
-	 *				sur l'application associées à l'instance.
+	 * @return		Les éventuelles informations sur le moyen de persistance ou sur l'application associées à l'instance.
 	 */
 	virtual OriginInfos* getOriginInfos ( );
 	virtual const OriginInfos* getOriginInfos ( ) const;
@@ -205,9 +233,10 @@ class Element
 	 * Constructeur.
 	 * @param		Nom de l'élément.
 	 * @param		Eventuel commentaire associé.
+	 * @param		Caractère surchargeable de l'élément.
+	 * @param		Caractère enregistrable de l'élément.
 	 */
-	Element (const IN_UTIL UTF8String& name, 
-	         const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ));
+	Element (const IN_UTIL UTF8String& name, const IN_UTIL UTF8String& comment = IN_UTIL UTF8String ( ), bool overloadable = true, bool safeguardable = true);
 
 	/**
 	 * Constructeur de copie.
@@ -226,14 +255,13 @@ class Element
 	 * @exception	Une exception est levée en cas d'erreur.
 	 */
 	void copy (const Element& elem);
-
+	
 
 	private :
 
 
 	/**
-	 * @param		Nouveau nom de l'élément. Ne doit pas contenir 
-	 * 				d'espaces et ne doit pas être nul.
+	 * @param		Nouveau nom de l'élément. Ne doit pas contenir d'espaces et ne doit pas être nul.
 	 */
 	virtual void setName (const IN_UTIL UTF8String& name);
 
@@ -244,16 +272,22 @@ class Element
 	virtual void setParent (Section* parent);
 
 	/** Le nom de l'élément. */
-	IN_UTIL UTF8String			_name;
-
+	IN_UTIL UTF8String					_name;
+	
+	/** Caractère surchargeable de l'élément. */
+	bool								_overloadable;		// v 5.7.0
+	
+	/** Caractère enregistrable de l'élément. */
+	bool								_safeguardable;		// v 5.7.0
+	
 	/** Le type, dans le cadre applicatif, de l'élément. */
-	IN_UTIL UTF8String			_appType;
+	IN_UTIL UTF8String					_appType;
 
 	/** Le parent de l'élément, s'il y en a un. */
-	Section*				_parent;
+	Section*							_parent;
 
 	/** L'éventuel commentaire associé à l'élément. */
-	IN_UTIL UTF8String			_comment;
+	IN_UTIL UTF8String					_comment;
 
 	/** Les éventuelles informations de persistance ou applicatives de
 	 * l'instance. */

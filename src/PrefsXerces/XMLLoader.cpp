@@ -20,6 +20,7 @@
 #include <TkUtil/UTF8String.h>
 
 #include <assert.h>
+#include <strings.h>
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
@@ -89,8 +90,7 @@ static const Charset	charset ("àéèùô");
 // ===========================================================================
 
 
-const string XMLLoader::XMLDocInformations::noNamespaceSchemaLocationTag (
-			"xsi:noNamespaceSchemaLocation");
+const string XMLLoader::XMLDocInformations::noNamespaceSchemaLocationTag ("xsi:noNamespaceSchemaLocation");
 const string XMLLoader::XMLDocInformations::xmlnsXsiTag ("xmlns:xsi");
 
 
@@ -100,16 +100,14 @@ XMLLoader::XMLDocInformations::XMLDocInformations ( )
 }	// XMLDocInformations::XMLDocInformations
 
 
-XMLLoader::XMLDocInformations::XMLDocInformations (
-								const XMLLoader::XMLDocInformations& toCopy)
+XMLLoader::XMLDocInformations::XMLDocInformations (const XMLLoader::XMLDocInformations& toCopy)
 	: Element::OriginInfos ("XML Document"), _schemaURL ( ), _namespace ( )
 {
 	copy (toCopy);
 }	// XMLDocInformations::XMLDocInformations
 
 
-XMLLoader::XMLDocInformations& XMLLoader::XMLDocInformations::operator = (
-								const XMLLoader::XMLDocInformations& toCopy)
+XMLLoader::XMLDocInformations& XMLLoader::XMLDocInformations::operator = (const XMLLoader::XMLDocInformations& toCopy)
 {
 	if (&toCopy != this)
 		copy (toCopy);
@@ -147,8 +145,7 @@ bool XMLLoader::XMLDocInformations::hasNamespace ( ) const
 }	// XMLDocInformations::hasNamespace
 
 
-const XMLLoader::XMLDocInformations::XMLNamespace& 
-				XMLLoader::XMLDocInformations::getNamespace ( ) const
+const XMLLoader::XMLDocInformations::XMLNamespace& XMLLoader::XMLDocInformations::getNamespace ( ) const
 {
 	if (0 == _namespace.get ( ))
 		throw Exception ("XMLDocInformations::getNamespace : absence d'espace de nommage.");
@@ -156,8 +153,7 @@ const XMLLoader::XMLDocInformations::XMLNamespace&
 }	// XMLDocInformations::getNamespace
 
 
-void XMLLoader::XMLDocInformations::setNamespace (
-							XMLLoader::XMLDocInformations::XMLNamespace* ns)
+void XMLLoader::XMLDocInformations::setNamespace (XMLLoader::XMLDocInformations::XMLNamespace* ns)
 {
 	_namespace.reset (ns);
 }	// XMLDocInformations::setNamespace
@@ -169,17 +165,13 @@ Element::OriginInfos* XMLLoader::XMLDocInformations::clone ( ) const
 }	// XMLDocInformations::clone
 
 
-void XMLLoader::XMLDocInformations::copy (
-							const XMLLoader::XMLDocInformations& toCopy)
+void XMLLoader::XMLDocInformations::copy (const XMLLoader::XMLDocInformations& toCopy)
 {
 	if (&toCopy != this)
 	{
 		Element::OriginInfos::copy (toCopy);
 		setSchemaURL (toCopy.getSchemaURL ( ));
-		XMLLoader::XMLDocInformations::XMLNamespace*	ns	=
-			false == toCopy.hasNamespace ( ) ? 
-			0 : new XMLLoader::XMLDocInformations::XMLNamespace (
-													toCopy.getNamespace ( ));
+		XMLLoader::XMLDocInformations::XMLNamespace*	ns	= false == toCopy.hasNamespace ( ) ? 0 : new XMLLoader::XMLDocInformations::XMLNamespace (toCopy.getNamespace ( ));
 		setNamespace (ns);
 	}	// XMLDocInformations::copy
 }	// XMLDocInformations::copy
@@ -192,20 +184,20 @@ void XMLLoader::XMLDocInformations::copy (
 
 const IN_STD	string XMLLoader::typeAttrName ("type");
 const IN_STD	string XMLLoader::nameAttrName ("name");
+const IN_STD	string XMLLoader::overloadableAttrName ("overloadable");
+const IN_STD	string XMLLoader::safeguardableAttrName ("safeguardable");
 const IN_STD	string XMLLoader::valueElementName ("value");
-const IN_UTIL	Version XMLLoader::version ("0.2.0");
+const IN_UTIL	Version XMLLoader::version ("0.3.0");
 const IN_STD	string XMLLoader::versionTag ("XMLLoader_version");
 
 
 Section* XMLLoader::load (const string& fileName, Section* initialSection)
 {
 	UTF8String		errorMessage (charset);
-	errorMessage << "Lecture de la configuration depuis le fichier " 
-	             << fileName << " impossible :\n";
+	errorMessage << "Lecture de la configuration depuis le fichier "  << fileName << " impossible :\n";
 	Section*		mainSection = initialSection;
 
-	// Xerces n'est pas tres robuste lorsque les droits sur les fichiers ne
-	// sont pas bons :
+	// Xerces n'est pas tres robuste lorsque les droits sur les fichiers ne sont pas bons :
 	File	file (fileName);
 	if ((false == file.exists ( )) || (false == file.isReadable ( )))
 	{
@@ -218,17 +210,14 @@ Section* XMLLoader::load (const string& fileName, Section* initialSection)
 	{
 		unique_ptr<XercesDOMParser>		parser (new XercesDOMParser ( ));
 		CHECK_unique_ptr (parser)
-		unique_ptr<XMLPrefsSAXErrorHandler>	errorHandler (
-											new XMLPrefsSAXErrorHandler ( ));
+		unique_ptr<XMLPrefsSAXErrorHandler>	errorHandler (new XMLPrefsSAXErrorHandler ( ));
 		CHECK_unique_ptr (errorHandler)
 		parser->setErrorHandler(errorHandler.get ( ));
-		// Parsing en 2 temps : premiere passe pour verifier le document, sans
-		// schéma.
+		// Parsing en 2 temps : premiere passe pour verifier le document, sans schéma.
 		parser->setDoNamespaces (true);
 		parser->setDoSchema (true);
 		parser->parse (fileName.c_str ( ));
-		if ((true == errorHandler->hasErrors ( )) ||
-		    (true == errorHandler->hasFatalErrors ( )))
+		if ((true == errorHandler->hasErrors ( )) || (true == errorHandler->hasFatalErrors ( )))
 		{
 			UTF8String	message ("Erreurs XML dans le fichier ", charset);
 			message	+= fileName + " :\n";
@@ -245,11 +234,9 @@ Section* XMLLoader::load (const string& fileName, Section* initialSection)
 			parser->setValidationScheme (AbstractDOMParser::Val_Always);
 //			parser->setValidationConstraintFatal (true);
 			parser->parse (fileName.c_str ( ));
-			if ((true == errorHandler->hasErrors ( )) ||
-			    (true == errorHandler->hasFatalErrors ( )))
+			if ((true == errorHandler->hasErrors ( )) || (true == errorHandler->hasFatalErrors ( )))
 			{
-				UTF8String	message (
-						"Erreurs XML Schema dans le fichier ", charset);
+				UTF8String	message ("Erreurs XML Schema dans le fichier ", charset);
 				message	+= fileName + " :\n";
 				message	+= errorHandler->wholeMessages ( );
 				throw Exception (message);
@@ -259,27 +246,17 @@ Section* XMLLoader::load (const string& fileName, Section* initialSection)
 		unique_ptr<DOMDocument>	doc	(parser->adoptDocument ( ));
 		// Memoriser les infos liees a l'eventuelle utilisation d'un schema.
 		unique_ptr<XMLLoader::XMLDocInformations>		docInfos;
-		DOMAttr*	schemaAttr	=
-			doc->getDocumentElement ( )->getAttributeNode (
-				X (XMLDocInformations::noNamespaceSchemaLocationTag.c_str( )));
-		DOMAttr*	nsAttr		=
-					doc->getDocumentElement ( )->getAttributeNode (
-							X (XMLDocInformations::xmlnsXsiTag.c_str ( )));
-		const string	schemaURL	= 0 == schemaAttr ? 
-						"" : StrX (schemaAttr->getValue ( )).localForm( );
-		const string	ns			= 0 == nsAttr ? 
-						"" : StrX (nsAttr->getValue ( )).localForm( );
+		DOMAttr*	schemaAttr	= doc->getDocumentElement ( )->getAttributeNode (X (XMLDocInformations::noNamespaceSchemaLocationTag.c_str( )));
+		DOMAttr*	nsAttr		= doc->getDocumentElement ( )->getAttributeNode (X (XMLDocInformations::xmlnsXsiTag.c_str ( )));
+		const string	schemaURL	= 0 == schemaAttr ? "" : StrX (schemaAttr->getValue ( )).localForm( );
+		const string	ns			= 0 == nsAttr ? "" : StrX (nsAttr->getValue ( )).localForm( );
 
 		if ((false == useSchema) && (0 != schemaURL.length ( )))
-		{	// Xerces dit qu'il n'y a pas de schéma associé et pourtant
-			// les attributs associés au schéma sont là => le document
-			// "schéma" n'a pas été trouvé.
+		{	// Xerces dit qu'il n'y a pas de schéma associé et pourtant les attributs associés au schéma sont là => le document "schéma" n'a pas été trouvé.
 			UTF8String	message (charset);
-			message << "Schéma " << schemaURL 
-			        << " introuvable pour le fichier XML " << fileName << ".";
+			message << "Schéma " << schemaURL  << " introuvable pour le fichier XML " << fileName << ".";
 			throw Exception (message);
 		}	// if ((false == useSchema) && (0 != schemaURL.length ( )))
-
 
 		docInfos.reset (new XMLLoader::XMLDocInformations ( ));
 		CHECK_PTR (docInfos.get ( ))
@@ -291,8 +268,7 @@ Section* XMLLoader::load (const string& fileName, Section* initialSection)
 				prefix	= XMLDocInformations::xmlnsXsiTag.substr (6);
 			else
 				throw Exception ("XMLLoader::load. Balise de description du schéma invalide.");
-			XMLDocInformations::XMLNamespace*	nsDef	=
-					new XMLDocInformations::XMLNamespace (prefix, ns);
+			XMLDocInformations::XMLNamespace*	nsDef	= new XMLDocInformations::XMLNamespace (prefix, ns);
 			CHECK_PTR (nsDef)
 			docInfos->setNamespace (nsDef);
 		}	// if ((0 != nsAttr) && (0 != ns.length ( ))
@@ -303,20 +279,14 @@ Section* XMLLoader::load (const string& fileName, Section* initialSection)
  		UTF8String	mainSectionName (StrX (doc->getDocumentElement ( )->getNodeName ( )).localForm ( ));	// CP v 5.5.4
 //			(const char*)doc->getDocumentElement ( )->getNodeName ( ), Charset::UTF_16);
 
-		// On teste la version afin d'utiliser éventuellement un lecteur
-		// antérieur :
-		DOMAttr*	versionAttr	= 
-			doc->getDocumentElement ( )->getAttributeNode (
-													X (versionTag.c_str ( )));
+		// On teste la version afin d'utiliser éventuellement un lecteur antérieur :
+		DOMAttr*	versionAttr	=  doc->getDocumentElement ( )->getAttributeNode (X (versionTag.c_str ( )));
 		CHECK_PTR (versionAttr)
-		const Version	docVersion (
-							StrX (versionAttr->getValue ( )).localForm( ));
+		const Version	docVersion (StrX (versionAttr->getValue ( )).localForm( ));
 		if ((0 != mainSection) && (mainSection->getName ( ) != mainSectionName))
 		{
 			UTF8String	msg (charset);
-			msg << " la configuration à modifier (" 
-			    << initialSection->getName ( ) 
-			    << ") et celle lue dans le fichier " << fileName 
+			msg << " la configuration à modifier ("  << initialSection->getName ( )  << ") et celle lue dans le fichier " << fileName 
 			    << "(" << mainSectionName << ") n'ont pas le même nom.";
 			throw Exception (msg);
 		}	// if ((0 != mainSection) && ...
@@ -357,15 +327,12 @@ Section* XMLLoader::load (const string& fileName, Section* initialSection)
 }	// XMLLoader::load
 
 
-void XMLLoader::save (const Section& section, const string& fileName,
-                      ENCODING encoding)
+void XMLLoader::save (const Section& section, const string& fileName, ENCODING encoding)
 {
 	UTF8String	errorMessage (charset);
-	errorMessage << "Enregistrement de la configuration " << section.getName ( )
-	             << " dans le fichier " << fileName << " impossible :\n";
+	errorMessage << "Enregistrement de la configuration " << section.getName ( ) << " dans le fichier " << fileName << " impossible :\n";
 
-	// Xerces n'est pas tres robuste lorsque les droits sur les fichiers ne
-	// sont pas bons :
+	// Xerces n'est pas tres robuste lorsque les droits sur les fichiers ne sont pas bons :
 	File	file (fileName);
 	if (false == file.isWritable ( ))
 	{
@@ -376,8 +343,10 @@ void XMLLoader::save (const Section& section, const string& fileName,
 	XercesSessionManager	sessionManager;
 	try
 	{
-		DOMImplementation*	domImpl	=
-			DOMImplementationRegistry::getDOMImplementation (X ("Core"));
+		if (false == section.isSafeguardable ( ))
+			throw Exception (UTF8String ("Section non enregistrable", charset));	// v 5.7.0
+			
+		DOMImplementation*	domImpl	= DOMImplementationRegistry::getDOMImplementation (X ("Core"));
 		CHECK_PTR (domImpl)
 		unique_ptr<DOMDocument>	doc	(domImpl->createDocument (
 						0,					// root element namespace
@@ -390,17 +359,14 @@ void XMLLoader::save (const Section& section, const string& fileName,
 		doc->setXmlStandalone (true);
 
 		// Le document fait il reference a un schema ?
-		const XMLLoader::XMLDocInformations*	docInfos	=
-						dynamic_cast<const XMLLoader::XMLDocInformations*>(
-													section.getOriginInfos ( ));
+		const XMLLoader::XMLDocInformations*	docInfos	= dynamic_cast<const XMLLoader::XMLDocInformations*>(section.getOriginInfos ( ));
 		if (0 != docInfos)
 		{
 			if (true == docInfos->hasSchema ( ))
 			{
 				// Le schéma utilisé :
 				doc->setXmlStandalone (false);
-				attr	= doc->createAttribute (X (
-					XMLDocInformations::noNamespaceSchemaLocationTag.c_str( )));
+				attr	= doc->createAttribute (X (XMLDocInformations::noNamespaceSchemaLocationTag.c_str( )));
 				CHECK_PTR (attr)
 				attr->setValue (X (docInfos->getSchemaURL ( ).c_str ( )));
 				rootElem->setAttributeNode (attr);
@@ -408,10 +374,8 @@ void XMLLoader::save (const Section& section, const string& fileName,
 				// La description du schéma :
 				if (true == docInfos->hasNamespace ( ))
 				{
-					const XMLDocInformations::XMLNamespace&	ns	=
-													docInfos->getNamespace ( );
-					attr	= doc->createAttribute (X (
-									XMLDocInformations::xmlnsXsiTag.c_str ( )));
+					const XMLDocInformations::XMLNamespace&	ns	= docInfos->getNamespace ( );
+					attr	= doc->createAttribute (X (XMLDocInformations::xmlnsXsiTag.c_str ( )));
 					CHECK_PTR (attr)
 					attr->setValue (X (ns.getURL ( ).c_str ( )));
 					rootElem->setAttributeNode (attr);
@@ -426,64 +390,47 @@ void XMLLoader::save (const Section& section, const string& fileName,
 		attr->setValue (X (version.getVersion ( ).c_str ( )));
 		rootElem->setAttributeNode (attr);
 
-		unique_ptr<XMLPrefsDOMErrorHandler>	
-						errorHandler(new XMLPrefsDOMErrorHandler( ));
+		unique_ptr<XMLPrefsDOMErrorHandler>	errorHandler(new XMLPrefsDOMErrorHandler( ));
 
-		DOMImplementation*	impl	=
-							DOMImplementationRegistry::getDOMImplementation (0);
-		unique_ptr<DOMLSSerializer>	serializer (
-						((DOMImplementationLS*)impl)->createLSSerializer ( ));
-		unique_ptr<DOMLSOutput>		outputDesc (
-						((DOMImplementationLS*)impl)->createLSOutput ( ));
-		unique_ptr<XMLFormatTarget>	formatTarget (
-						new LocalFileFormatTarget (X (fileName.c_str ( ))));
+		DOMImplementation*	impl	= DOMImplementationRegistry::getDOMImplementation (0);
+		unique_ptr<DOMLSSerializer>	serializer (((DOMImplementationLS*)impl)->createLSSerializer ( ));
+		unique_ptr<DOMLSOutput>		outputDesc (((DOMImplementationLS*)impl)->createLSOutput ( ));
+		unique_ptr<XMLFormatTarget>	formatTarget (new LocalFileFormatTarget (X (fileName.c_str ( ))));
 		CHECK_unique_ptr (formatTarget)
 		outputDesc->setByteStream (formatTarget.get ( ));
 
-		serializer->getDomConfig ( )->setParameter (
-									XMLUni::fgDOMWRTFormatPrettyPrint, true);
-		serializer->getDomConfig ( )->setParameter (
-									X ("error-handler"), errorHandler.get ( ));
+		serializer->getDomConfig ( )->setParameter (XMLUni::fgDOMWRTFormatPrettyPrint, true);
+		serializer->getDomConfig ( )->setParameter (X ("error-handler"), errorHandler.get ( ));
 		CHECK_PTR ((DOMDocumentImpl*)doc.get ( ))
 		switch (encoding)
 		{
-			case UTF_8	:
-				((DOMDocumentImpl*)doc.get ( ))->setXmlEncoding (X ("UTF-8"));
+			case UTF_8	: ((DOMDocumentImpl*)doc.get ( ))->setXmlEncoding (X ("UTF-8"));
 				break;
 			case ISO_8859	:
 				try
 				{
-					string	charset	= 
-								Locale::getNormalizedIsoString (Locale::EXE);
-					((DOMDocumentImpl*)doc.get ( ))->setXmlEncoding (
-														X (charset.c_str ( )));
+					string	charset	= Locale::getNormalizedIsoString (Locale::EXE);
+					((DOMDocumentImpl*)doc.get ( ))->setXmlEncoding (X (charset.c_str ( )));
 				}
 				catch (...)
 				{
-					((DOMDocumentImpl*)doc.get ( ))->setXmlEncoding (
-														X ("ISO-8859-1"));
+					((DOMDocumentImpl*)doc.get ( ))->setXmlEncoding (X ("ISO-8859-1"));
 				}
 				break;
-			case UTF_16	:
-				((DOMDocumentImpl*)doc.get ( ))->setXmlEncoding (
-														X ("UTF-16"));
+			case UTF_16	: ((DOMDocumentImpl*)doc.get ( ))->setXmlEncoding (X ("UTF-16"));
 				break;
 			default		:
-				errorMessage << "Type d'encodage (" << (unsigned long)encoding
-				             << ") inconnu.";
+				errorMessage << "Type d'encodage (" << (unsigned long)encoding << ") inconnu.";
 				throw Exception (errorMessage);
 		}	// switch (encoding)
  
 		if (false == serializer->write (doc.get ( ), outputDesc.get ( )))
 		{
 			UTF8String	msg (charset);
-			msg  << "ATTENTION : des erreurs se sont produites lors "
-			     << " de la sauvegarde de la configuration "
-			     << section.getName ( ) << " dans " << fileName << " :\n"
-			     << errorHandler->wholeMessages ( );
+			msg  << "ATTENTION : des erreurs se sont produites lors de la sauvegarde de la configuration "
+			     << section.getName ( ) << " dans " << fileName << " :\n" << errorHandler->wholeMessages ( );
 			throw Exception (msg);
 		}	// if (false == serializer->write (doc.get ( ), outputDesc.get ( )))
-
 	}
 	catch (const DOMException& domExc)
 	{
@@ -523,7 +470,6 @@ const XMLCh* XMLLoader::unicodeToXMLString (const UTF8String& str, ENCODING enco
 	{
 		case UTF_8		: 
 			retVal	= XMLString::replicate (X (str.utf8 ( ).c_str ( )));	// v 5.6.0
-//			retVal	= XMLString::replicate (X (str.ascii ( ).c_str ( )));
 			break;
 		case ISO_8859	: 
 		case UTF_16		: 
@@ -531,8 +477,7 @@ const XMLCh* XMLLoader::unicodeToXMLString (const UTF8String& str, ENCODING enco
 			static bool	firstCall	= true;
 //			retVal	= XMLString::replicate (str.unicode ( ));
 			const UTF16String	utf16 (str.utf16 ( ));
-			// ATTENTION : au premier appel UTF-8 -> UTF-16 la classe UTF8String
-			// semble mettre en 1er octet l'endian (BE/LE) utilisé (en fait
+			// ATTENTION : au premier appel UTF-8 -> UTF-16 la classe UTF8String semble mettre en 1er octet l'endian (BE/LE) utilisé (en fait
 			// c'est iconv qui ferait ça).
 			if (true == firstCall)
 			{
@@ -553,10 +498,8 @@ const XMLCh* XMLLoader::unicodeToXMLString (const UTF8String& str, ENCODING enco
 
 bool XMLLoader::isSimpleType (const Element& element)
 {
-	const DoubleTripletNamedValue*	dtValue		=
-					dynamic_cast<const DoubleTripletNamedValue*>(&element);
-	const ColorNamedValue*			colorValue	=
-					dynamic_cast<const ColorNamedValue*>(&element);
+	const DoubleTripletNamedValue*	dtValue		= dynamic_cast<const DoubleTripletNamedValue*>(&element);
+	const ColorNamedValue*			colorValue	= dynamic_cast<const ColorNamedValue*>(&element);
 
 	if ((0 == dtValue) && (0 == colorValue))
 		return true;
@@ -565,8 +508,7 @@ bool XMLLoader::isSimpleType (const Element& element)
 }	// XMLLoader::isSimpleType
 
 
-bool XMLLoader::typesAreCompatible (
-								const string& type1, const string& type2)
+bool XMLLoader::typesAreCompatible (const string& type1, const string& type2)
 {
 	if (type1 == type2)
 		return true;
@@ -587,8 +529,7 @@ bool XMLLoader::typesAreCompatible (
 
 UTF8String XMLLoader::getElementName (const DOMElement& element)
 {
-	DOMAttr*	nameAttr	= element.getAttributeNode (
-									X (XMLLoader::nameAttrName.c_str ( )));
+	DOMAttr*	nameAttr	= element.getAttributeNode (X (XMLLoader::nameAttrName.c_str ( )));
 	if (0 == nameAttr)
 	{
 		UTF8String	errorMsg (charset);
@@ -603,8 +544,7 @@ UTF8String XMLLoader::getElementName (const DOMElement& element)
 
 string XMLLoader::getElementType (const DOMElement& element)
 {
-	DOMAttr*	typeAttr	= element.getAttributeNode (
-									X (XMLLoader::typeAttrName.c_str ( )));
+	DOMAttr*	typeAttr	= element.getAttributeNode (X (XMLLoader::typeAttrName.c_str ( )));
 	if (0 == typeAttr)
 	{
 		UTF8String	errorMsg (charset);
@@ -614,6 +554,26 @@ string XMLLoader::getElementType (const DOMElement& element)
 
 	return StrX (typeAttr->getValue ( )).localForm ( );
 }	// XMLLoader::getElementType
+
+
+bool XMLLoader::isElementOverloadable (const DOMElement& element)	// v 5.7.0
+{
+	DOMAttr*	typeAttr	= element.getAttributeNode (X (XMLLoader::overloadableAttrName.c_str ( )));
+	if (0 == typeAttr)
+		return true;
+
+	return 0 == strcasecmp (StrX (typeAttr->getValue ( )).localForm ( ), "true") ? true : false;
+}	// XMLLoader::isElementOverloadable
+
+
+bool XMLLoader::isElementSafeguardable (const DOMElement& element)	// v 5.7.0
+{
+	DOMAttr*	typeAttr	= element.getAttributeNode (X (XMLLoader::safeguardableAttrName.c_str ( )));
+	if (0 == typeAttr)
+		return true;
+
+	return 0 == strcasecmp (StrX (typeAttr->getValue ( )).localForm ( ), "true") ? true : false;
+}	// XMLLoader::isElementSafeguardable
 
 
 void XMLLoader::loadSection (Section& section, const DOMElement& node)
@@ -627,8 +587,7 @@ void XMLLoader::loadSection (Section& section, const DOMElement& node)
 		DOMNode*	currentNode	= children->item (c);
 		CHECK_PTR (currentNode)
 
-		// On ne s'interesse qu'aux "elements". Les DOMTextNode peuvent
-		// introduire des sections. C'est par exemple le cas des tabulations
+		// On ne s'interesse qu'aux "elements". Les DOMTextNode peuvent introduire des sections. C'est par exemple le cas des tabulations
 		// en debut de section.
 		if (DOMNode::ELEMENT_NODE != currentNode->getNodeType ( ))
 			continue;
@@ -637,6 +596,7 @@ void XMLLoader::loadSection (Section& section, const DOMElement& node)
 			continue;
 
 		UTF8String	name (charset), type (charset), appType (charset);
+		bool		overloadable	= isElementOverloadable (*element), safeguardable	= isElementSafeguardable (*element);
 		try
 		{
 			appType	= 	StrX (currentNode->getNodeName ( )).localForm ( );		// CP v 5.5.4
@@ -652,17 +612,14 @@ void XMLLoader::loadSection (Section& section, const DOMElement& node)
 		catch (const Exception& e)
 		{
 			UTF8String	mess (charset);
-			mess << "Erreur dans XMLLoader::loadSection en " 
-			     << __FILE__ << ' ' << (unsigned long)__LINE__ << " : " 
-			     << "\n" << e.getFullMessage ( );
+			mess << "Erreur dans XMLLoader::loadSection en " << __FILE__ << ' ' << (unsigned long)__LINE__ << " : \n" << e.getFullMessage ( );
 			ConsoleOutput::cout ( ) << mess << co_endl;
 			continue;
 		}
 		catch (...)
 		{
 			UTF8String	mess (charset);
-			mess << "Erreur non renseignée dans XMLLoader::loadSection en "
-			     << __FILE__ << ' ' << (unsigned long)__LINE__;
+			mess << "Erreur non renseignée dans XMLLoader::loadSection en " << __FILE__ << ' ' << (unsigned long)__LINE__;
 			ConsoleOutput::cout ( ) << mess << co_endl;
 			continue;
 		}
@@ -670,45 +627,52 @@ void XMLLoader::loadSection (Section& section, const DOMElement& node)
 		if (type == "container")
 		{
 			if (true == section.hasSection (name))
-				loadSection (section.getSection (name), *element);
+			{
+				Section&	s	= section.getSection (name);	// v 5.7.0
+				if (true == s.isOverloadable ( ))				// v 5.7.0
+					loadSection (s, *element);
+			}
 			else
 			{
-				Section*	s	= new Section (name);
+				Section*	s	= new Section (name, "", true, safeguardable);	// v 5.7.0
 				CHECK_PTR (s)
 				s->setAppType (appType);
 				section.addSection (s);
 				loadSection (*s, *element);
+				s->setOverloadable (overloadable);	// v 5.7.0
 			}	// else if (true == section.hasSection (name))
 		}	// if (type == section.getType ( ))
 		else
-			updateNamedValue (section, name, *element, type, appType);
+			updateNamedValue (section, name, *element, type, appType, overloadable, safeguardable);
 	}	// for (XMLSize_t c = 0; c < children->getLength ( ); c++)
 }	// XMLLoader::loadSection
 
 
-void XMLLoader::updateNamedValue (
-		Section& section, const UTF8String& name, const DOMElement& node, 
-		const string& type, const UTF8String& appType)
+void XMLLoader::updateNamedValue (Section& section, const UTF8String& name, const DOMElement& node, const string& type, const UTF8String& appType, bool overloadable, bool safeguardable)
 {
+	NamedValue*	nv	= 0;	// v 5.7.0
 	if (true == section.hasNamedValue (name))
 	{
-		if ((0 != type.length ( )) &&
-		    (false == typesAreCompatible (
-							section.getNamedValue (name).getType ( ), type)))
+		if ((0 != type.length ( )) && (false == typesAreCompatible (section.getNamedValue (name).getType ( ), type)))
 		{
 			UTF8String	mess (charset);
-			mess << "ATTENTION, la valeur " << name 
-			     << " lue en configuration n'est pas mise à jour : types "
-			     << "incompatibles (" 
-			     << section.getNamedValue (name).getType ( ) << "/" << type
-			     << ").";
+			mess << "ATTENTION, la valeur " << name  << " lue en configuration n'est pas mise à jour : types incompatibles (" 
+			     << section.getNamedValue (name).getType ( ) << "/" << type << ").";
 			ConsoleOutput::cout ( ) << mess << co_endl;
 			return;
 		}	// if ((0 != type.length ( )) && ...
+
+		if (false == section.getNamedValue (name).isOverloadable ( ))
+		{	// v 5.7.0
+			UTF8String	mess (charset);
+			mess << "ATTENTION, la valeur " << name  << " lue en configuration n'est pas mise à jour : valeur non surchargeable.";
+			ConsoleOutput::cout ( ) << mess << co_endl;
+			return;			
+		}	// if (false == section.getNamedValue (name).isOverloadable ( ))
 	}	// if (true == section.hasNamedValue (name))
 	else
 	{
-		NamedValue*	nv	= createNamedValue (name, type);
+		nv	= createNamedValue (name, type, true, safeguardable);
 		CHECK_PTR (nv)
 		nv->setAppType (appType);
 		section.addNamedValue (nv);
@@ -718,43 +682,41 @@ void XMLLoader::updateNamedValue (
 		updateSimpleValue (section.getNamedValue (name), node);
 	else
 		updateComplexValue (section.getNamedValue (name), node);
+	if (0 != nv)
+		nv->setOverloadable (overloadable);	// v 5.7.0
 }	// XMLLoader::updateNamedValue
 
 
-NamedValue* XMLLoader::createNamedValue (
-								const UTF8String& name, const string& type)
+NamedValue* XMLLoader::createNamedValue (const UTF8String& name, const string& type, bool overloadable, bool safeguardable)
 {
 	if ((type == "string") || (type == StringNamedValue::typeName))
-		return new StringNamedValue (name);
+		return new StringNamedValue (name, "", "", overloadable, safeguardable);
 
 	if ((type == "boolean") || (type == BoolNamedValue::typeName))
-		return new BoolNamedValue (name);
+		return new BoolNamedValue (name, false, "", overloadable, safeguardable);
 
 	if ((type == "color") || (type == ColorNamedValue::typeName))
-		return new ColorNamedValue (name);
+		return new ColorNamedValue (name, 0., 0., 0., "", overloadable, safeguardable);
 
 	if ((type == "long") || (type == LongNamedValue::typeName))
-		return new LongNamedValue (name);
+		return new LongNamedValue (name, 0, "", overloadable, safeguardable);
 
 	if ((type == "unsignedLong") || (type == UnsignedLongNamedValue::typeName))
-		return new UnsignedLongNamedValue (name);
+		return new UnsignedLongNamedValue (name, 0, "", overloadable, safeguardable);
 
 	if ((type == "double") || (type == DoubleNamedValue::typeName))
-		return new DoubleNamedValue (name);
+		return new DoubleNamedValue (name, 0., "", overloadable, safeguardable);
 
-	if ((type == "doubleTriplet") || 
-	    (type == DoubleTripletNamedValue::typeName))
-		return new DoubleTripletNamedValue (name);
+	if ((type == "doubleTriplet") || (type == DoubleTripletNamedValue::typeName))
+		return new DoubleTripletNamedValue (name, 0., 0., 0., "", overloadable, safeguardable);
 
 	UTF8String	errorMsg (charset);
-	errorMsg << "Impossibilité de créer la valeur nommée " << name
-	         << " : type " << type << " inconnu.";
+	errorMsg << "Impossibilité de créer la valeur nommée " << name << " : type " << type << " inconnu.";
 	throw Exception (errorMsg);
 }	// XMLLoader::createNamedValue
 
 
-void XMLLoader::updateSimpleValue (
-						NamedValue& namedValue, const DOMElement& node)
+void XMLLoader::updateSimpleValue (NamedValue& namedValue, const DOMElement& node)
 {
 	updateComments (namedValue, node);
 	const UTF8String	value	= getStrValue (node);
@@ -771,16 +733,11 @@ void XMLLoader::updateSimpleValue (
 	{
 		BoolNamedValue*	boolValue	= dynamic_cast<BoolNamedValue*>(&namedValue);
 		CHECK_PTR (boolValue)
-		if ((value != BoolNamedValue::trueStr) &&
-		    (value != BoolNamedValue::falseStr))
+		if ((value != BoolNamedValue::trueStr) && (value != BoolNamedValue::falseStr))
 		{
 			UTF8String	errorMsg (charset);
-			errorMsg 
-				<< "Impossibilité de mettre à jour la valeur nommée "
-				<< namedValue.getName ( ) << " de type booléen : "
-				<< value << " n'est pas un booléen (" 
-				<< BoolNamedValue::trueStr << "/" << BoolNamedValue::falseStr
-				<< ").";
+			errorMsg  << "Impossibilité de mettre à jour la valeur nommée " << namedValue.getName ( ) << " de type booléen : "
+				      << value << " n'est pas un booléen ("  << BoolNamedValue::trueStr << "/" << BoolNamedValue::falseStr << ").";
 			throw Exception (errorMsg);
 		}	// if ((value != BoolNamedValue::trueStr) && ...
 		boolValue->setValue (value == BoolNamedValue::trueStr ? true : false);
@@ -823,8 +780,7 @@ void XMLLoader::updateSimpleValue (
 	}	// if (DoubleNamedValue::typeName == namedValue.getType ( ))
 
 	UTF8String	errorMsg (charset);
-	errorMsg << "Impossibilité d'affecter la valeur " << value
-	         << " à la valeur nommée " << namedValue.getName ( )
+	errorMsg << "Impossibilité d'affecter la valeur " << value << " à la valeur nommée " << namedValue.getName ( )
 	         << " : type inconnu (" << namedValue.getType ( ) << ").";
 	throw Exception (errorMsg);
 }	// updateSimpleValue
@@ -832,8 +788,7 @@ void XMLLoader::updateSimpleValue (
 
 UTF8String XMLLoader::getStrValue (const DOMElement& node)
 {
-	// La valeur d'un element simple est stockée dans le sous-element de
-	// nom XMLLoader::valueElementName :
+	// La valeur d'un element simple est stockée dans le sous-element de nom XMLLoader::valueElementName :
 	DOMNodeList*	children	= node.getChildNodes ( );
 	for (XMLSize_t c = 0; c < children->getLength ( ); c++)
 	{
@@ -871,8 +826,7 @@ UTF8String XMLLoader::getStrValue (const DOMElement& node)
 }	// XMLLoader::getStrValue
 
 
-void XMLLoader::updateComplexValue (
-							NamedValue& namedValue, const DOMElement& node)
+void XMLLoader::updateComplexValue (NamedValue& namedValue, const DOMElement& node)
 {
 	updateComments (namedValue, node);
 
@@ -880,21 +834,16 @@ void XMLLoader::updateComplexValue (
 	if (0 == children)
 	{
 		UTF8String	errorMsg (charset);
-		errorMsg << "Le noeud " << namedValue.getName ( )
-		         << " n'a pas d'enfant. Impossible de reconstituer la valeur "
-		         << "nommée complexe.";
+		errorMsg << "Le noeud " << namedValue.getName ( ) << " n'a pas d'enfant. Impossible de reconstituer la valeur nommée complexe.";
 		throw Exception (errorMsg);
 	}	// if (0 == children)
 
 	bool	done3 [3]	= {false, false, false};
 	if (ColorNamedValue::typeName == namedValue.getType ( ))
 	{
-		ColorNamedValue*	color	= 
-						dynamic_cast<ColorNamedValue*>(&namedValue);
+		ColorNamedValue*	color	=  dynamic_cast<ColorNamedValue*>(&namedValue);
 		CHECK_PTR (color)
-		double				red		= color->getRed ( ), 
-							green	= color->getGreen ( ),
-							blue	= color->getBlue ( );
+		double				red		= color->getRed ( ), green	= color->getGreen ( ), blue	= color->getBlue ( );
 
 		for (XMLSize_t i = 0; i < children->getLength ( ); i++)
 		{
@@ -903,8 +852,7 @@ void XMLLoader::updateComplexValue (
 			if (0 == current)
 				continue;
 
-			const string	name	= 
-					StrX (current->getNodeName ( )).localForm ( );
+			const string	name	=  StrX (current->getNodeName ( )).localForm ( );
 			if ((name != "red") && (name != "green") && (name != "blue"))
 				continue;
 
@@ -936,8 +884,7 @@ void XMLLoader::updateComplexValue (
 			if (false == done3 [j])
 			{
 				UTF8String	errorMsg (charset);
-				errorMsg << "Informations incomplètes pour la valeur nommée "
-				         << " de type couleur " << namedValue.getName ( );
+				errorMsg << "Informations incomplètes pour la valeur nommée de type couleur " << namedValue.getName ( );
 				throw Exception (errorMsg);
 			}	// if (false == done3 [j])
 
@@ -948,11 +895,9 @@ void XMLLoader::updateComplexValue (
 
 	if (DoubleTripletNamedValue::typeName == namedValue.getType ( ))
 	{
-		DoubleTripletNamedValue*	dtValue	= 
-						dynamic_cast<DoubleTripletNamedValue*>(&namedValue);
+		DoubleTripletNamedValue*	dtValue	=  dynamic_cast<DoubleTripletNamedValue*>(&namedValue);
 		CHECK_PTR (dtValue)
-		double		x	= dtValue->getX ( ), y	= dtValue->getY ( ),
-					z	= dtValue->getZ ( );
+		double		x	= dtValue->getX ( ), y	= dtValue->getY ( ), z	= dtValue->getZ ( );
 
 		for (XMLSize_t i = 0; i < children->getLength ( ); i++)
 		{
@@ -961,8 +906,7 @@ void XMLLoader::updateComplexValue (
 			if (0 == current)
 				continue;
 
-			const string	name	= 
-					StrX (current->getNodeName ( )).localForm ( );
+			const string	name	= StrX (current->getNodeName ( )).localForm ( );
 			if ((name != "x") && (name != "y") && (name != "z"))
 				continue;
 
@@ -994,9 +938,7 @@ void XMLLoader::updateComplexValue (
 			if (false == done3 [j])
 			{
 				UTF8String	errorMsg (charset);
-				errorMsg << "Informations incomplètes pour la valeur nommée "
-				         << " de type triplet de double " 
-				         << namedValue.getName ( );
+				errorMsg << "Informations incomplètes pour la valeur nommée de type triplet de double " << namedValue.getName ( );
 				throw Exception (errorMsg);
 			}	// if (false == done3 [j])
 
@@ -1024,8 +966,7 @@ void XMLLoader::updateComments (Element& element, const DOMElement& node)
 		if (0 == currentElement)
 			continue;
 
-		const string	nodeName	= 	
-							StrX (currentNode->getNodeName ( )).localForm ( );
+		const string	nodeName	= StrX (currentNode->getNodeName ( )).localForm ( );
 
 		// Cas particulier : element "annotation" => c'est un commentaire :
 		if (nodeName == "annotation")
@@ -1035,8 +976,7 @@ void XMLLoader::updateComments (Element& element, const DOMElement& node)
 			{
 				DOMNode*	current	= annotations->item (a);
 				CHECK_PTR (current)
-				const string	annName	= 
-								StrX (current->getNodeName ( )).localForm ( );
+				const string	annName	= StrX (current->getNodeName ( )).localForm ( );
 				if (annName != "documentation")
 					continue;
 
@@ -1060,49 +1000,45 @@ void XMLLoader::updateComments (Element& element, const DOMElement& node)
 }	// updateComments
 
 
-void XMLLoader::addChildren (
-			const Section& section, DOMElement& element, DOMDocument& doc, 
-			ENCODING encoding)
+void XMLLoader::addChildren (const Section& section, DOMElement& element, DOMDocument& doc, ENCODING encoding)
 {
 	vector<Section*>	subsections	= section.getSections ( );
-	for (vector<Section*>::const_iterator its = subsections.begin ( );
-	     subsections.end ( ) != its; its++)
+	for (vector<Section*>::const_iterator its = subsections.begin ( ); subsections.end ( ) != its; its++)
 	{
-		DOMElement*	e	= createElement (**its, doc, encoding);
+		if (true == (*its)->isSafeguardable ( ))	// v 5.7.0
+		{
+			DOMElement*	e	= createElement (**its, doc, encoding);
 
-		element.appendChild (e);
-		addChildren (**its, *e, doc, encoding);
+			element.appendChild (e);
+			addChildren (**its, *e, doc, encoding);
+		}	// if (true == (*its)->isSafeguardable ( ))
 	}	// for (vector<Section*>::const_iterator its = subsections.begin ( );...
 
 	vector<NamedValue*>	values	= section.getNamedValues ( );
-	for (vector<NamedValue*>::const_iterator	itnv	= values.begin ( );
-	     values.end ( ) != itnv; itnv++)
+	for (vector<NamedValue*>::const_iterator	itnv	= values.begin ( ); values.end ( ) != itnv; itnv++)
 	{
-		// Valeur de l'element. Si c'est un type XML schema non complexe on lui 
-		// affecte en tant qu'attribut. Dans le cas contraire on lui affecte a 
-		// l'aide d'elements.
-		if (true == isSimpleType (**itnv))
-			addSimpleNamedValue (**itnv, element, doc, encoding);
-		else
-			addComplexNamedValue (**itnv, element, doc, encoding);
+		if (true == (*itnv)->isSafeguardable ( ))	// v 5.7.0
+		{
+			// Valeur de l'element. Si c'est un type XML schema non complexe on lui affecte en tant qu'attribut. Dans le cas contraire on lui affecte a 
+			// l'aide d'elements.
+			if (true == isSimpleType (**itnv))
+				addSimpleNamedValue (**itnv, element, doc, encoding);
+			else
+				addComplexNamedValue (**itnv, element, doc, encoding);
+		}	// if (true == (*its)->isSafeguardable ( ))
 	}	// for (vector<NamedValue*>::const_iterator	itnv	= ...
 }	// XMLLoader::addChildren
 
 
-DOMElement* XMLLoader::addSimpleNamedValue (
-            const NamedValue& element, DOMElement& container, DOMDocument& doc,
-			ENCODING encoding)
+DOMElement* XMLLoader::addSimpleNamedValue (const NamedValue& element, DOMElement& container, DOMDocument& doc, ENCODING encoding)
 {
 	DOMElement*	e		= createElement (element, doc, encoding);
 	assert (0 != e);
 
-	// La valeur de l'element : contenue dans un DOMElement sans commentaire
-	// afin d'etre sur d'etre lu sans eventuels indentations ou sauts de lignes.
-	DOMElement*	valElem	= 
-				doc.createElement (X (XMLLoader::valueElementName.c_str ( )));
+	// La valeur de l'element : contenue dans un DOMElement sans commentaire afin d'etre sur d'etre lu sans eventuels indentations ou sauts de lignes.
+	DOMElement*	valElem	= doc.createElement (X (XMLLoader::valueElementName.c_str ( )));
 	CHECK_PTR (valElem)
-	DOMText*	value	= 
-				doc.createTextNode (X (element.getStrValue ( ).c_str ( )));
+	DOMText*	value	= doc.createTextNode (X (element.getStrValue ( ).c_str ( )));
 	CHECK_PTR (value)
 	valElem->appendChild (value);
 	e->appendChild (valElem);
@@ -1113,20 +1049,15 @@ DOMElement* XMLLoader::addSimpleNamedValue (
 }	// XMLLoader::addSimpleNamedValue
 
 
-DOMElement* XMLLoader::addComplexNamedValue (
-            const NamedValue& element, DOMElement& container, DOMDocument& doc,
-			ENCODING encoding)
+DOMElement* XMLLoader::addComplexNamedValue (const NamedValue& element, DOMElement& container, DOMDocument& doc, ENCODING encoding)
 {
-	const DoubleTripletNamedValue*	dtValue		=
-					dynamic_cast<const DoubleTripletNamedValue*>(&element);
-	const ColorNamedValue*			colorValue	=
-					dynamic_cast<const ColorNamedValue*>(&element);
+	const DoubleTripletNamedValue*	dtValue		= dynamic_cast<const DoubleTripletNamedValue*>(&element);
+	const ColorNamedValue*			colorValue	= dynamic_cast<const ColorNamedValue*>(&element);
 
 	if ((0 == dtValue) && (0 == colorValue))
 	{
 		UTF8String	errorMsg (charset);
-		errorMsg << "Le type de préférence " << element.getType ( )
-		         << " n'est pas un type XML schema complexe.";
+		errorMsg << "Le type de préférence " << element.getType ( ) << " n'est pas un type XML schema complexe.";
 		INTERNAL_ERROR (exc, errorMsg, "XMLLoader::addComplexNamedValue")
 		throw exc;
 	}
@@ -1191,43 +1122,52 @@ DOMElement* XMLLoader::addComplexNamedValue (
 }	// XMLLoader::addComplexNamedValue
 
 
-DOMElement* XMLLoader::createElement (
-				const Element& element, DOMDocument& doc, ENCODING encoding)
+DOMElement* XMLLoader::createElement (const Element& element, DOMDocument& doc, ENCODING encoding)
 {
-	UTF8String	typeName	= 
-				XMLSchemaPrefsHelper::elementToXMLschemaTypeName (element);
-//	DOMElement*	e	= XMLLoader::UTF_8 == encoding ?
-//						doc.createElement (X (typeName.ascii ( ).c_str ( ))) :
-//						doc.createElement (typeName.unicode ( ));
+	UTF8String	typeName	= XMLSchemaPrefsHelper::elementToXMLschemaTypeName (element);
+//	DOMElement*	e	= XMLLoader::UTF_8 == encoding ? doc.createElement (X (typeName.ascii ( ).c_str ( ))) : doc.createElement (typeName.unicode ( ));
 	DOMElement*	e	= doc.createElement(unicodeToXMLString (typeName,encoding));
 	CHECK_PTR (e)
 
 	// L'attribut "nom" :
 	UTF8String	name	= element.getName ( );
-	DOMAttr*		attr	= 
-				doc.createAttribute (X (XMLLoader::nameAttrName.c_str ( )));
+	DOMAttr*		attr	= doc.createAttribute (X (XMLLoader::nameAttrName.c_str ( )));
 	CHECK_PTR (attr)
-//	attr->setValue (XMLLoader::UTF_8 == encoding ? 
-//	                X (name.ascii( ).c_str( )) : name.unicode ( ));
+//	attr->setValue (XMLLoader::UTF_8 == encoding ? X (name.ascii( ).c_str( )) : name.unicode ( ));
 	attr->setValue (unicodeToXMLString (name, encoding));
 	e->setAttributeNode (attr);
-
+	
 	// L'attribut "type" :
 	attr	= doc.createAttribute (X (XMLLoader::typeAttrName.c_str ( )));
 	CHECK_PTR (attr)
-	attr->setValue (X (XMLSchemaPrefsHelper::elementToXMLschemaType (
-									element).c_str ( )));
+	attr->setValue (X (XMLSchemaPrefsHelper::elementToXMLschemaType (element).c_str ( )));
 	e->setAttributeNode (attr);
 
+	// L'attribut surchargeable :
+	if (false == element.isOverloadable ( ))
+	{	// v 5.7.0
+		attr	= doc.createAttribute (X (XMLLoader::overloadableAttrName.c_str ( )));
+		CHECK_PTR (attr)
+		attr->setValue (X ("false"));
+		e->setAttributeNode (attr);
+	}	// if (false == element.isOverloadable ( ))
+
+	// L'attribut enregistrable :
+	if (false == element.isSafeguardable ( ))
+	{	// v 5.7.0
+		attr	= doc.createAttribute (X (XMLLoader::safeguardableAttrName.c_str ( )));
+		CHECK_PTR (attr)
+		attr->setValue (X ("false"));
+		e->setAttributeNode (attr);
+	}	// if (false == element.isSafeguardable ( ))
+		
 	addComments (element, *e, doc, encoding);
 
 	return e;
 }	// XMLLoader::createElement
 
 
-void XMLLoader::addComments (
-				const Element& element, DOMElement& node, DOMDocument& doc, 
-				ENCODING encoding)
+void XMLLoader::addComments (const Element& element, DOMElement& node, DOMDocument& doc, ENCODING encoding)
 {
 	if (true == element.hasComment ( ))
 	{
