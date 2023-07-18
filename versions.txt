@@ -1,3 +1,9 @@
+Version 6.2.1 : 23/06/23
+===============
+
+Correctifs cmake pour bon fonctionnement en environnement spack.
+
+
 Version 6.2.0 : 23/06/23
 ===============
 

@@ -6,7 +6,9 @@ find_package (GUIToolkitsVariables)
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
 #include (FindXercesC)	# Non car on ne peut pas choisir la version
-#include (${GUIToolkitsVariables_CMAKE_DIR}/XercesC.cmake)
+# The FindXercesC.cmake file is deployed in GUIToolkitsVariables_CMAKE_DIR
+list(APPEND CMAKE_MODULE_PATH ${GUIToolkitsVariables_CMAKE_DIR})
+
 find_package (XercesC REQUIRED)
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
 
