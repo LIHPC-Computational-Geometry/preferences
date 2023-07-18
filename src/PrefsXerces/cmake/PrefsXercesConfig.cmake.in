@@ -1,5 +1,7 @@
 include(CMakeFindDependencyMacro)
 find_dependency (PrefsCore)
+# The FindXercesC.cmake file is deployed in GUIToolkitsVariables_CMAKE_DIR
+list(APPEND CMAKE_MODULE_PATH ${GUIToolkitsVariables_CMAKE_DIR})
 find_dependency (XercesC)
 #include(FindPkgConfig)
 #pkg_check_modules (Xerces-C++ REQUIRED xerces-c)
