@@ -14,17 +14,10 @@
 #include <QtUtil/QtMessageBox.h>
 
 #include <QCursor>
-#ifndef QT_5
-#include <QtGui/QApplication>
-#include <QtGui/QInputDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QLineEdit>
-#else	// QT_5
 #include <QApplication>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QLineEdit>
-#endif	// QT_5
 
 #include <assert.h>
 #include <memory>

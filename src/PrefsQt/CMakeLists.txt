@@ -5,10 +5,11 @@ find_package (GUIToolkitsVariables)
 
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/common_qt.cmake)	# QT_MAJOR
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
 
 find_package (QtUtil 6 REQUIRED)
-find_package(Qt5Core 5 NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
+find_package(Qt${QT_MAJOR}Core ${QT_MAJOR} NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
 
 file (GLOB HEADERS public/${CURRENT_PACKAGE_NAME}/*.h)
 file (GLOB CPP_SOURCES *.cpp)

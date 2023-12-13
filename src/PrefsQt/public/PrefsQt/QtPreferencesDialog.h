@@ -4,17 +4,10 @@
 #include <PrefsCore/prefs_config.h>
 #include <PrefsQt/QtPreferencesPanel.h>
 
-#ifndef QT_5
-#include <QtGui/QDialog>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtGui/QStatusBar>
-#else	// QT_5
 #include <QDialog>
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
-#endif	// QT_5
 
 #include <string>
 
