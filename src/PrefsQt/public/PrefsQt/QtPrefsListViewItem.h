@@ -7,11 +7,7 @@
 #include <string>
 
 #include <QValidator>
-#ifndef QT_5
-#include <QtGui/QTreeWidget>
-#else	// QT_5
 #include <QTreeWidget>
-#endif	// QT_5
 
 
 class QtPrefsSectionListViewItem;

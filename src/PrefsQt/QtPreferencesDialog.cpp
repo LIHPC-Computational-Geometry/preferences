@@ -8,19 +8,11 @@
 
 #include <QFileInfo>
 #include <QCursor>
-#ifndef QT_5
-#include <QtGui/QLayout>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtGui/QApplication>
-#include <QtGui/QLabel>
-#else	// QT_5
 #include <QLayout>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QApplication>
 #include <QLabel>
-#endif	// QT_5
 #include <QtUtil/CharToLatinQString.h>
 
 #include <memory>
@@ -51,7 +43,11 @@ QtPreferencesDialog::QtPreferencesDialog (
 	setModal (modal);
 
 	QVBoxLayout*	layout	= new QVBoxLayout (this);
+#ifdef QT_5
 	layout->setMargin (10);
+#else	// => Qt6
+	layout->setContentsMargins (10, 10, 10, 10);
+#endif	// QT_5
 	layout->setSpacing (10);
 	layout->setSizeConstraint (QLayout::SetMinimumSize);
 	_menuBar	= createMenu (editable, withApply);

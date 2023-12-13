@@ -5,11 +5,7 @@
 #include <PrefsCore/Section.h>
 
 // MOC_SKIP_BEGIN
-#ifndef QT_5
-#include <QtGui/QTreeWidget>
-#else	// QT_5
 #include <QTreeWidget>
-#endif	// QT_5
 // MOC_SKIP_END
 
 #include <string>

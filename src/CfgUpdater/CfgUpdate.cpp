@@ -3,11 +3,7 @@
 #include <QtUtil/QtUnicodeHelper.h>
 #include <TkUtil/Exception.h>
 
-#ifndef QT_5
-#include <QtGui/QApplication>
-#else	// QT_5
 #include <QApplication>
-#endif	// QT_5
 
 #include <iostream>
 #include <stdexcept>
