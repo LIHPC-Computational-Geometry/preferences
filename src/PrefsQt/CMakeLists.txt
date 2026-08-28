@@ -1,12 +1,13 @@
 set (CURRENT_PACKAGE_NAME "PrefsQt")
 set (CURRENT_PACKAGE_MACRO_NAME "PREFERENCES")
 
-find_package (GUIToolkitsVariables)
+find_package (GUIToolkitsVariables 1.7 REQUIRED)
 
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common_qt.cmake)	# QT_MAJOR
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/utilities.cmake)
 
 find_package (QtUtil 6 REQUIRED)
 find_package(Qt${QT_MAJOR}Core ${QT_MAJOR} NO_CMAKE_SYSTEM_PATH)	# In order to enable moc ...
@@ -31,6 +32,8 @@ target_link_libraries (PrefsQt PUBLIC QtUtil::QtUtil PrefsXerces)
 # Etre capable une fois installée de retrouver TkUtil, XercesC, Qt*, ... :
 # (Rem : en son absence on a Set runtime path of "/tmp/pignerol/install/lib/libPrefsQt.so.5.0.0" to "") ...
 set_target_properties (PrefsQt PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1 INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+separate_debug_infos (PrefsQt ${CMAKE_INSTALL_PREFIX}/src)
+
 # Inefficace ici : CMAKE_AUTOMOC => dans le CMakeLists.txt racine
 #set (CMAKE_AUTOMOC ON)
 
