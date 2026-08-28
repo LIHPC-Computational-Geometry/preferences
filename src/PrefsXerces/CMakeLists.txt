@@ -1,10 +1,12 @@
 set (CURRENT_PACKAGE_NAME "PrefsXerces")
 set (CURRENT_PACKAGE_MACRO_NAME "PREFERENCES")
 
-find_package (GUIToolkitsVariables)
+find_package (GUIToolkitsVariables 1.7 REQUIRED)
 
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/utilities.cmake)
+
 #include (FindXercesC)	# Non car on ne peut pas choisir la version
 # The FindXercesC.cmake file is deployed in GUIToolkitsVariables_CMAKE_DIR
 list(APPEND CMAKE_MODULE_PATH ${GUIToolkitsVariables_CMAKE_DIR})
@@ -41,6 +43,7 @@ target_link_libraries (PrefsXerces PUBLIC PrefsCore XercesC::XercesC)
 # Etre capable une fois installée de retrouver TkUtil, XercesC, ... :
 # (Rem : en son absence on a Set runtime path of "/tmp/pignerol/install/lib/libPrefsXerces.so.5.0.0" to "") ...
 set_target_properties (PrefsXerces PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1 INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+separate_debug_infos (PrefsXerces ${CMAKE_INSTALL_PREFIX}/src)
 
 # INSTALLATION :
 include(CMakePackageConfigHelpers)

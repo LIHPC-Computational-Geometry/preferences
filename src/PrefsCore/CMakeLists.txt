@@ -1,11 +1,12 @@
 set (CURRENT_PACKAGE_NAME "PrefsCore")
 set (CURRENT_PACKAGE_MACRO_NAME "PREFERENCES")
 
-find_package (GUIToolkitsVariables)
+find_package (GUIToolkitsVariables 1.7 REQUIRED)
 
 include (${CMAKE_SOURCE_DIR}/cmake/version.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/common.cmake)
 include (${GUIToolkitsVariables_CMAKE_DIR}/workarounds.cmake)
+include (${GUIToolkitsVariables_CMAKE_DIR}/utilities.cmake)
 
 find_package (TkUtil 6 REQUIRED)
 file (GLOB HEADERS public/${CURRENT_PACKAGE_NAME}/*.h)
@@ -26,6 +27,7 @@ target_link_libraries (PrefsCore PUBLIC TkUtil::TkUtil)
 # Etre capable une fois installée de retrouver TkUtil, ... :
 # (Rem : en son absence on a Set runtime path of "/tmp/pignerol/install/lib/libPrefsCore.so.5.0.0" to "") ...
 set_target_properties (PrefsCore PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+separate_debug_infos (PrefsCore ${CMAKE_INSTALL_PREFIX}/src)
 
 # INSTALLATION :
 include(CMakePackageConfigHelpers)
